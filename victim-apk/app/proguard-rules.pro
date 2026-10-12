@@ -3,3 +3,4 @@
 -keep class org.json.** { *; }
 -dontwarn okhttp3.**
 -dontwarn io.socket.**
+-dontwarn org.json.**
