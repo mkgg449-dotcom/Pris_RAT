@@ -11,20 +11,22 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background: #000;
 }
 
 body {
-  background: #000;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
 }
 
-/* الصورة كخلفية كاملة */
 .bg-image {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-image: url('https://i.imgur.com/cPQL4sV.png');
   background-size: contain;
   background-position: center center;
@@ -33,29 +35,22 @@ body {
   z-index: 1;
 }
 
-/* الفورم شفاف فوق الصورة */
 .login-overlay {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 500px;
   height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  /* مكان الصندوق داخل الصورة */
-  padding-top: 55%;
+  padding-top: 8vh;
 }
 
-/* الحقول الشفافة */
 .login-form {
-  width: 78%;
-  max-width: 320px;
+  width: 300px;
   display: flex;
   flex-direction: column;
-  gap: 11px;
+  gap: 10px;
 }
 
 .input-group {
@@ -65,27 +60,27 @@ body {
 
 .input-group input {
   width: 100%;
-  background: rgba(10, 15, 25, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(80, 100, 130, 0.5);
-  border-radius: 8px;
-  padding: 11px 40px 11px 14px;
+  background: rgba(5, 10, 20, 0.85);
+  border: 1px solid rgba(80, 100, 130, 0.4);
+  border-radius: 6px;
+  padding: 10px 38px 10px 14px;
   color: #fff;
-  font-size: 14px;
+  font-size: 13px;
   outline: none;
   transition: all 0.3s;
   font-family: inherit;
+  height: 42px;
 }
 
 .input-group input::placeholder {
-  color: rgba(150, 170, 200, 0.6);
+  color: rgba(140, 160, 190, 0.55);
+  font-size: 13px;
 }
 
 .input-group input:focus {
   border-color: #ff0033;
-  background: rgba(255, 0, 51, 0.08);
-  box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
+  background: rgba(255, 0, 51, 0.1);
+  box-shadow: 0 0 12px rgba(255, 0, 51, 0.4);
 }
 
 .input-icon {
@@ -93,40 +88,50 @@ body {
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 15px;
+  font-size: 14px;
   color: #ff0033;
   pointer-events: none;
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
-/* زر الدخول - شفاف عشان يبان زر الصورة */
 .btn-login {
   width: 100%;
-  background: rgba(255, 0, 51, 0.35);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: linear-gradient(135deg, rgba(255,0,51,0.85), rgba(180,0,40,0.85));
   color: #fff;
-  border: 1px solid rgba(255, 0, 51, 0.6);
-  border-radius: 8px;
-  padding: 11px;
-  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 14px;
   font-weight: bold;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   cursor: pointer;
-  margin-top: 3px;
-  transition: all 0.3s;
+  height: 42px;
   font-family: inherit;
-  box-shadow: 0 0 15px rgba(255, 0, 51, 0.4);
+  box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
+  transition: all 0.3s;
 }
 
 .btn-login:hover {
-  background: rgba(255, 0, 51, 0.6);
-  box-shadow: 0 0 25px rgba(255, 0, 51, 0.8);
+  box-shadow: 0 0 25px rgba(255, 0, 51, 0.9);
 }
 
-.btn-login:active { transform: scale(0.98); }
+.remember-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(180, 190, 210, 0.7);
+  font-size: 11px;
+  cursor: pointer;
+  padding-right: 5px;
+}
 
-/* رسالة الخطأ */
+.remember-row input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: #ff0033;
+  cursor: pointer;
+}
+
 .error-msg {
   background: rgba(255, 0, 0, 0.2);
   border: 1px solid #f00;
@@ -139,32 +144,11 @@ body {
 }
 .error-msg.show { display: block; }
 
-/* تذكرني */
-.remember-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(200, 210, 230, 0.8);
-  font-size: 12px;
-  cursor: pointer;
-  user-select: none;
-  justify-content: flex-start;
-}
-
-.remember-row input[type="checkbox"] {
-  width: 15px;
-  height: 15px;
-  accent-color: #ff0033;
-  cursor: pointer;
-}
-
-/* نسخة الموبايل */
 @media (max-width: 600px) {
-  .login-overlay { padding-top: 60%; }
-  .login-form { width: 82%; max-width: 300px; gap: 9px; }
-  .input-group input { padding: 10px 36px 10px 12px; font-size: 13px; }
-  .btn-login { padding: 10px; font-size: 14px; }
-  .remember-row { font-size: 11px; }
+  .login-form { width: 260px; gap: 8px; }
+  .input-group input { height: 38px; padding: 8px 34px 8px 12px; font-size: 12px; }
+  .btn-login { height: 38px; font-size: 13px; }
+  .login-overlay { padding-top: 5vh; }
 }
 </style>
 </head>
@@ -173,10 +157,10 @@ body {
 <div class="bg-image"></div>
 
 <div class="login-overlay">
-  <form method="POST" action="/login" class="login-form">
+  <form method="POST" action="/login" class="login-form" autocomplete="off">
     
     <div class="input-group">
-      <input type="text" name="username" placeholder="Username" required autocomplete="off">
+      <input type="text" name="username" placeholder="Username" required>
       <span class="input-icon">👤</span>
     </div>
 
