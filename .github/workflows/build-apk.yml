@@ -1,4 +1,4 @@
-name: Build APK
+name: Build APK Manual
 
 on:
   workflow_dispatch:
@@ -6,25 +6,62 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: mingc/android-build-box:latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Gradle
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Android SDK
         run: |
-          apt-get update && apt-get install -y wget unzip
-          wget -q https://services.gradle.org/distributions/gradle-7.5-bin.zip
-          unzip -q gradle-7.5-bin.zip -d /opt
-          echo "/opt/gradle-7.5/bin" >> $GITHUB_PATH
-      
-      - name: Build APK
-        working-directory: ./victim-apk
-        run: gradle assembleDebug --no-daemon
-      
+          mkdir -p $HOME/sdk
+          cd $HOME/sdk
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-*.zip
+          mkdir -p cmdline-tools/latest
+          mv cmdline-tools/bin cmdline-tools/lib cmdline-tools/latest/ 2>/dev/null || true
+          echo "ANDROID_HOME=$HOME/sdk" >> $GITHUB_ENV
+          echo "$HOME/sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$HOME/sdk/platform-tools" >> $GITHUB_PATH
+          yes | $HOME/sdk/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
+          $HOME/sdk/cmdline-tools/latest/bin/sdkmanager "platforms;android-33" "build-tools;33.0.1" "platform-tools" > /dev/null
+
+      - name: Build APK Manually
+        working-directory: ./victim-apk/app/src/main
+        run: |
+          BT=$ANDROID_HOME/build-tools/33.0.1
+          PLATFORM=$ANDROID_HOME/platforms/android-33/android.jar
+          
+          mkdir -p ../../build/gen ../../build/obj ../../build/apk
+          
+          # 1. Compile resources
+          $BT/aapt package -f -m -J ../../build/gen -M AndroidManifest.xml -S res -I $PLATFORM
+          
+          # 2. Compile Java
+          find java ../../build/gen -name "*.java" > sources.txt
+          javac -d ../../build/obj -classpath $PLATFORM -source 1.8 -target 1.8 @sources.txt
+          
+          # 3. Convert to DEX
+          $BT/d8 --output ../../build/apk --lib $PLATFORM $(find ../../build/obj -name "*.class")
+          
+          # 4. Package APK
+          cd ../../build/apk
+          $BT/aapt package -f -M ../../src/main/AndroidManifest.xml -S ../../src/main/res -I $PLATFORM -F app-unsigned.apk
+          cp classes.dex app-unsigned.apk.tmp 2>/dev/null || true
+          zip -uj app-unsigned.apk classes.dex
+          
+          # 5. Align & Sign
+          $BT/zipalign -f 4 app-unsigned.apk app-aligned.apk
+          
+          # Create keystore
+          keytool -genkey -v -keystore ../../build/my.keystore -alias pris -keyalg RSA -keysize 2048 -validity 10000 -storepass pris123 -keypass pris123 -dname "CN=Pris" 2>/dev/null
+          
+          $BT/apksigner sign --ks ../../build/my.keystore --ks-pass pass:pris123 --key-pass pass:pris123 --out Tool.apk app-aligned.apk
+
       - name: Upload APK
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: Tool-APK
-          path: victim-apk/app/build/outputs/apk/debug/*.apk
+          path: victim-apk/build/apk/Tool.apk
