@@ -1,0 +1,34 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdk 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.pris.rat.tool"
+        minSdk 21
+        targetSdk 30
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core:1.10.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    implementation 'io.socket:socket.io-client:2.1.0'
+}
