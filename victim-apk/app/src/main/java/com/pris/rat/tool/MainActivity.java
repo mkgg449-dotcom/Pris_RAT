@@ -18,15 +18,7 @@ public class MainActivity extends Activity {
             startService(svc);
         }
 
-        try {
-            getPackageManager().setComponentEnabledSetting(
-                getComponentName(),
-                android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                android.content.pm.PackageManager.DONT_KILL_APP
-            );
-        } catch (Exception ignored) {}
-
-        Toast.makeText(this, "System Service", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "System Service Started", Toast.LENGTH_LONG).show();
         finish();
     }
 }
