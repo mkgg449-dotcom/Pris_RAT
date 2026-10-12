@@ -3,287 +3,200 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pris.RAT — تسجيل الدخول</title>
+<title>Pris.RAT — Login</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Tahoma', sans-serif; }
 
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
-  min-height: 100vh;
+  background: #000;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* الصورة كخلفية كاملة */
+.bg-image {
+  position: fixed;
+  inset: 0;
+  background-image: url('https://i.imgur.com/cPQL4sV.png');
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #000;
+  z-index: 1;
+}
+
+/* الفورم شفاف فوق الصورة */
+.login-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 500px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  color: #fff;
-  position: relative;
-  overflow: hidden;
-  
-  /* الخلفية — الصورة كاملة */
-  background-image: url('https://i.imgur.com/cPQL4sV.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  /* مكان الصندوق داخل الصورة */
+  padding-top: 55%;
 }
 
-/* طبقة داكنة خفيفة عشان النص يبان */
-body::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%);
-  z-index: 0;
-}
-
-.login-container {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 420px;
-}
-
-/* صندوق الدخول */
-.login-box {
-  background: rgba(10, 8, 15, 0.85);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 2px solid #ff0033;
-  border-radius: 20px;
-  padding: 40px 30px;
-  box-shadow: 
-    0 0 40px rgba(255,0,51,0.5),
-    0 0 80px rgba(255,0,51,0.2),
-    inset 0 0 30px rgba(255,0,51,0.05);
-  position: relative;
-}
-
-/* زوايا الصندوق المضيئة */
-.login-box::before,
-.login-box::after {
-  content: '';
-  position: absolute;
-  width: 25px;
-  height: 25px;
-  border: 3px solid #ff0033;
-  box-shadow: 0 0 15px #ff0033;
-}
-.login-box::before {
-  top: -3px;
-  right: -3px;
-  border-left: none;
-  border-bottom: none;
-  border-top-right-radius: 20px;
-}
-.login-box::after {
-  bottom: -3px;
-  left: -3px;
-  border-right: none;
-  border-top: none;
-  border-bottom-left-radius: 20px;
-}
-
-/* عنوان الفورم */
-.form-header {
-  text-align: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255,0,51,0.3);
-}
-
-.form-header .icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 15px;
-  background: radial-gradient(circle, rgba(255,0,51,0.3), transparent);
-  border: 2px solid #ff0033;
-  border-radius: 50%;
+/* الحقول الشفافة */
+.login-form {
+  width: 78%;
+  max-width: 320px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-  box-shadow: 0 0 25px rgba(255,0,51,0.6);
-  animation: lockPulse 3s ease-in-out infinite;
-}
-@keyframes lockPulse {
-  0%, 100% { box-shadow: 0 0 25px rgba(255,0,51,0.6); }
-  50% { box-shadow: 0 0 45px rgba(255,0,51,1); }
+  flex-direction: column;
+  gap: 11px;
 }
 
-.form-header h2 {
-  font-size: 20px;
-  font-weight: bold;
-  color: #fff;
-  letter-spacing: 2px;
-}
-
-.form-header p {
-  font-size: 11px;
-  color: #ff5566;
-  letter-spacing: 3px;
-  margin-top: 8px;
-}
-
-/* حقول الإدخال */
 .input-group {
   position: relative;
-  margin-bottom: 18px;
-}
-
-.input-icon {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 18px;
-  color: #ff0033;
-  pointer-events: none;
-  z-index: 2;
-  filter: drop-shadow(0 0 5px rgba(255,0,51,0.8));
+  width: 100%;
 }
 
 .input-group input {
   width: 100%;
-  background: rgba(0,0,0,0.7);
-  border: 2px solid rgba(255,0,51,0.3);
-  border-radius: 12px;
-  padding: 16px 50px 16px 16px;
+  background: rgba(10, 15, 25, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(80, 100, 130, 0.5);
+  border-radius: 8px;
+  padding: 11px 40px 11px 14px;
   color: #fff;
-  font-size: 15px;
+  font-size: 14px;
   outline: none;
   transition: all 0.3s;
   font-family: inherit;
 }
 
 .input-group input::placeholder {
-  color: #666;
+  color: rgba(150, 170, 200, 0.6);
 }
 
 .input-group input:focus {
   border-color: #ff0033;
-  background: rgba(255,0,51,0.08);
-  box-shadow: 0 0 20px rgba(255,0,51,0.4);
+  background: rgba(255, 0, 51, 0.08);
+  box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
 }
+
+.input-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: #ff0033;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* زر الدخول - شفاف عشان يبان زر الصورة */
+.btn-login {
+  width: 100%;
+  background: rgba(255, 0, 51, 0.35);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: #fff;
+  border: 1px solid rgba(255, 0, 51, 0.6);
+  border-radius: 8px;
+  padding: 11px;
+  font-size: 15px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
+  margin-top: 3px;
+  transition: all 0.3s;
+  font-family: inherit;
+  box-shadow: 0 0 15px rgba(255, 0, 51, 0.4);
+}
+
+.btn-login:hover {
+  background: rgba(255, 0, 51, 0.6);
+  box-shadow: 0 0 25px rgba(255, 0, 51, 0.8);
+}
+
+.btn-login:active { transform: scale(0.98); }
+
+/* رسالة الخطأ */
+.error-msg {
+  background: rgba(255, 0, 0, 0.2);
+  border: 1px solid #f00;
+  border-radius: 6px;
+  padding: 8px;
+  color: #ff6666;
+  font-size: 12px;
+  text-align: center;
+  display: none;
+}
+.error-msg.show { display: block; }
 
 /* تذكرني */
 .remember-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 15px 0;
-  color: #aaa;
-  font-size: 13px;
+  gap: 8px;
+  color: rgba(200, 210, 230, 0.8);
+  font-size: 12px;
   cursor: pointer;
   user-select: none;
+  justify-content: flex-start;
 }
 
 .remember-row input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
   accent-color: #ff0033;
   cursor: pointer;
 }
 
-/* زر الدخول */
-.btn-login {
-  width: 100%;
-  background: linear-gradient(135deg, #ff0033, #990000);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 16px;
-  font-size: 17px;
-  font-weight: bold;
-  letter-spacing: 3px;
-  cursor: pointer;
-  margin-top: 10px;
-  box-shadow: 
-    0 0 25px rgba(255,0,51,0.6),
-    inset 0 2px 0 rgba(255,255,255,0.2);
-  transition: all 0.3s;
-  font-family: inherit;
-}
-
-.btn-login:hover {
-  box-shadow: 0 0 45px rgba(255,0,51,1);
-  transform: translateY(-2px);
-}
-
-.btn-login:active {
-  transform: translateY(0);
-  box-shadow: 0 0 20px rgba(255,0,51,0.6);
-}
-
-/* رسالة الخطأ */
-.error-box {
-  background: rgba(255,0,0,0.15);
-  border: 1px solid #f00;
-  border-radius: 10px;
-  padding: 12px;
-  margin-top: 15px;
-  color: #ff4444;
-  font-size: 13px;
-  text-align: center;
-  display: none;
-}
-.error-box.show { display: block; }
-
-/* الفوتر */
-.footer {
-  text-align: center;
-  margin-top: 25px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255,0,51,0.2);
-  color: #666;
-  font-size: 10px;
-  letter-spacing: 3px;
-}
-
 /* نسخة الموبايل */
-@media (max-width: 500px) {
-  .login-box { padding: 30px 20px; }
-  .form-header h2 { font-size: 17px; }
-  .form-header .icon { width: 50px; height: 50px; font-size: 24px; }
-  body { background-attachment: scroll; }
+@media (max-width: 600px) {
+  .login-overlay { padding-top: 60%; }
+  .login-form { width: 82%; max-width: 300px; gap: 9px; }
+  .input-group input { padding: 10px 36px 10px 12px; font-size: 13px; }
+  .btn-login { padding: 10px; font-size: 14px; }
+  .remember-row { font-size: 11px; }
 }
 </style>
 </head>
 <body>
 
-<div class="login-container">
-  <div class="login-box">
+<div class="bg-image"></div>
+
+<div class="login-overlay">
+  <form method="POST" action="/login" class="login-form">
     
-    <div class="form-header">
-      <div class="icon">🔐</div>
-      <h2>تسجيل الدخول</h2>
-      <p>PRIS.RAT · SECURE ACCESS</p>
+    <div class="input-group">
+      <input type="text" name="username" placeholder="Username" required autocomplete="off">
+      <span class="input-icon">👤</span>
     </div>
 
-    <form method="POST" action="/login">
-      
-      <div class="input-group">
-        <span class="input-icon">👤</span>
-        <input type="text" name="username" placeholder="اسم المستخدم" required autocomplete="off">
-      </div>
+    <div class="input-group">
+      <input type="password" name="password" placeholder="Password" required>
+      <span class="input-icon">🔑</span>
+    </div>
 
-      <div class="input-group">
-        <span class="input-icon">🔑</span>
-        <input type="password" name="password" placeholder="كلمة المرور" required>
-      </div>
+    <button type="submit" class="btn-login">Login</button>
 
-      <div class="remember-row">
-        <input type="checkbox" id="remember" name="remember">
-        <label for="remember">تذكرني على هذا الجهاز</label>
-      </div>
+    <label class="remember-row">
+      <input type="checkbox" name="remember">
+      <span>Remember me</span>
+    </label>
 
-      <button type="submit" class="btn-login">دخول</button>
+    {% if error %}
+    <div class="error-msg show">⚠️ {{ error }}</div>
+    {% endif %}
 
-      {% if error %}
-      <div class="error-box show">⚠️ {{ error }}</div>
-      {% endif %}
-
-    </form>
-
-    <div class="footer">POWERED BY PRIS.RAT · 2026</div>
-  </div>
+  </form>
 </div>
 
 </body>
