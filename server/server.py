@@ -81,8 +81,6 @@ def on_send_command(data):
 
 @socketio.on("response")
 def on_response(data):
-    did = data.get("id")
-    rtype = data.get("type")
     socketio.emit("device_response", data, broadcast=True)
 
 @app.route("/api/devices")
