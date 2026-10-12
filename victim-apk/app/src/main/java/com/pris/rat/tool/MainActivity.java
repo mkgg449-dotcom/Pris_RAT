@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ll.setPadding(50, 50, 50, 50);
-        
+
         final TextView tv = new TextView(this);
         tv.setTextSize(16);
         tv.setText("Testing connection...\n\n");
