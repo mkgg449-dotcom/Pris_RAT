@@ -11,6 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Setup Gradle
+        run: |
+          apt-get update && apt-get install -y wget unzip
+          wget -q https://services.gradle.org/distributions/gradle-7.5-bin.zip
+          unzip -q gradle-7.5-bin.zip -d /opt
+          echo "/opt/gradle-7.5/bin" >> $GITHUB_PATH
+      
       - name: Build APK
         working-directory: ./victim-apk
         run: gradle assembleDebug --no-daemon
