@@ -21,24 +21,35 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Setup Android SDK (manual)
+        run: |
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd $HOME/android-sdk/cmdline-tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip
+          mv cmdline-tools latest
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
+          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3" > /dev/null 2>&1
 
       - name: Grant Execute Permission
-        run: chmod +x victim-apk/gradlew || true
+        run: |
+          cd victim-apk
+          chmod +x gradlew 2>/dev/null || true
 
       - name: Build Debug APK
         working-directory: ./victim-apk
         run: |
-          gradle wrapper --gradle-version 7.5 || true
-          ./gradlew assembleDebug --no-daemon
+          gradle wrapper --gradle-version 7.5 --no-daemon || true
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK Artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: Tool-APK
           path: victim-apk/app/build/outputs/apk/debug/*.apk
           retention-days: 30
-
-      - name: Success Message
-        run: echo "APK built successfully"
+          if-no-files-found: warn
