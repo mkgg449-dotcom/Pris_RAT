@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: pris-rat-server
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --worker-class eventlet -w 1 server:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        value: pris_rat_secret_2026
+    plan: free
+    region: frankfurt
