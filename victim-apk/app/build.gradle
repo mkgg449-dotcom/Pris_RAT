@@ -1,13 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdk 30
-    buildToolsVersion "30.0.3"
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.pris.rat.tool"
         minSdk 21
-        targetSdk 30
+        targetSdk 33
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
