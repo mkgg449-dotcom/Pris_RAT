@@ -1,12 +1,10 @@
 package com.pris.rat.tool;
 
-import android.accessibilityservice.AccessibilityService;
-import android.view.accessibility.AccessibilityEvent;
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
 
-public class AccessService extends AccessibilityService {
+public class AccessService extends Service {
     @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {}
-
-    @Override
-    public void onInterrupt() {}
+    public IBinder onBind(Intent intent) { return null; }
 }
