@@ -7,41 +7,29 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
 body {
-  background: #000 url('https://i.imgur.com/wolf_bg.jpg') center/cover;
+  background: #000;
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
-  color: #fff; position: relative;
-}
-body::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.85), rgba(20,0,0,0.9));
-  z-index: 0;
+  color: #fff;
+  padding: 20px;
 }
 .login-box {
-  position: relative; z-index: 1;
   background: rgba(10,10,15,0.95);
   border: 2px solid #ff0033;
   border-radius: 20px;
   padding: 40px 30px;
-  width: 90%; max-width: 400px;
-  box-shadow: 0 0 40px rgba(255,0,51,0.5), inset 0 0 20px rgba(255,0,51,0.1);
+  width: 100%; max-width: 400px;
+  box-shadow: 0 0 40px rgba(255,0,51,0.5);
 }
-.logo {
-  text-align: center; margin-bottom: 30px;
-}
+.logo { text-align: center; margin-bottom: 30px; }
 .logo h1 {
   font-size: 32px; color: #fff;
-  text-shadow: 0 0 10px #ff0033, 0 0 20px #ff0033;
+  text-shadow: 0 0 10px #ff0033;
   letter-spacing: 3px;
 }
 .logo h1 span { color: #ff0033; }
-.logo p {
-  color: #888; font-size: 12px; margin-top: 5px;
-  letter-spacing: 2px;
-}
-.input-group {
-  position: relative; margin-bottom: 20px;
-}
+.logo p { color: #888; font-size: 12px; margin-top: 5px; letter-spacing: 2px; }
+.input-group { position: relative; margin-bottom: 20px; }
 .input-group input {
   width: 100%;
   background: rgba(0,0,0,0.6);
@@ -49,7 +37,6 @@ body::before {
   border-radius: 10px;
   padding: 15px 45px 15px 15px;
   color: #fff; font-size: 15px;
-  transition: all 0.3s;
   outline: none;
 }
 .input-group input:focus {
@@ -59,7 +46,6 @@ body::before {
 .input-group .icon {
   position: absolute; right: 15px; top: 50%;
   transform: translateY(-50%); color: #ff0033;
-  font-size: 18px;
 }
 .btn-login {
   width: 100%;
@@ -70,28 +56,9 @@ body::before {
   font-weight: bold; letter-spacing: 2px;
   cursor: pointer;
   box-shadow: 0 0 20px rgba(255,0,51,0.5);
-  transition: all 0.3s;
 }
-.btn-login:hover {
-  box-shadow: 0 0 35px rgba(255,0,51,0.9);
-  transform: translateY(-2px);
-}
-.remember {
-  display: flex; align-items: center;
-  margin: 15px 0;
-  color: #888; font-size: 13px;
-}
-.remember input { margin-left: 8px; accent-color: #ff0033; }
-.error {
-  color: #ff0033; text-align: center;
-  font-size: 13px; margin-top: 10px;
-  display: none;
-}
-.footer {
-  text-align: center; margin-top: 20px;
-  color: #444; font-size: 11px;
-  letter-spacing: 1px;
-}
+.error { color: #ff0033; text-align: center; font-size: 13px; margin-top: 10px; }
+.footer { text-align: center; margin-top: 20px; color: #444; font-size: 11px; }
 </style>
 </head>
 <body>
@@ -102,20 +69,16 @@ body::before {
   </div>
   <form method="POST" action="/login">
     <div class="input-group">
-      <input type="text" name="username" placeholder="اسم المستخدم" required autocomplete="off">
+      <input type="text" name="username" placeholder="اسم المستخدم" required>
       <span class="icon">👤</span>
     </div>
     <div class="input-group">
       <input type="password" name="password" placeholder="كلمة السر" required>
       <span class="icon">🔑</span>
     </div>
-    <div class="remember">
-      <input type="checkbox" name="remember" id="rm">
-      <label for="rm">تذكرني</label>
-    </div>
     <button type="submit" class="btn-login">دخول</button>
     {% if error %}
-    <div class="error" style="display:block">{{ error }}</div>
+    <div class="error">{{ error }}</div>
     {% endif %}
   </form>
   <div class="footer">POWERED BY PRIS.RAT © 2026</div>
