@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pris.RAT — الإعدادات</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Tahoma', sans-serif; }
+
+:root {
+  --bg: #0a0a0f;
+  --panel: #0f1117;
+  --panel-2: #14161d;
+  --border: #1e212b;
+  --red: #ff0033;
+  --red-dim: rgba(255,0,51,0.15);
+  --green: #00ff88;
+  --text: #e8e8ea;
+  --text-dim: #7a7e8a;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo-icon {
+  width: 42px;
+  height: 42px;
+  background: radial-gradient(circle, var(--red-dim), transparent);
+  border: 2px solid var(--red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 0 15px rgba(255,0,51,0.5);
+}
+
+.sidebar-logo-text h2 {
+  font-size: 17px;
+  letter-spacing: 1px;
+}
+.sidebar-logo-text h2 span { color: var(--red); }
+.sidebar-logo-text p {
+  font-size: 8px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  color: var(--text-dim);
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-right: 3px solid transparent;
+}
+
+.nav-item:hover {
+  background: rgba(255,0,51,0.05);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: var(--red-dim);
+  color: var(--text);
+  border-right-color: var(--red);
+}
+
+.nav-item .ico { font-size: 18px; width: 22px; text-align: center; }
+
+.sidebar-footer {
+  padding: 15px;
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+/* MAIN */
+.main {
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.back-btn {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.page-title .icon { color: var(--red); margin-left: 8px; }
+
+/* SECTION */
+.section {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.section-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.section-title .icon { color: var(--red); }
+
+.section-body {
+  padding: 20px;
+}
+
+/* LANGUAGE */
+.lang-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.lang-card {
+  background: var(--panel-2);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+  position: relative;
+}
+
+.lang-card:hover {
+  border-color: var(--red);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255,0,51,0.2);
+}
+
+.lang-card.selected {
+  border-color: var(--red);
+  background: var(--red-dim);
+  box-shadow: 0 0 25px rgba(255,0,51,0.4);
+}
+
+.lang-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--red);
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.lang-flag {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.lang-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.lang-code {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+}
+
+/* SETTINGS ROW */
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.setting-row:last-child { border-bottom: none; }
+
+.setting-info { flex: 1; }
+
+.setting-name {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.setting-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* TOGGLE */
+.toggle {
+  width: 50px;
+  height: 28px;
+  background: var(--border);
+  border-radius: 14px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+
+.toggle.on {
+  background: var(--red);
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.toggle.on::after {
+  right: 25px;
+}
+
+/* BUTTON */
+.btn {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: inherit;
+}
+
+.btn:hover {
+  box-shadow: 0 0 20px rgba(255,0,51,0.6);
+  transform: translateY(-2px);
+}
+
+.btn.secondary {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.btn.secondary:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* ABOUT */
+.about-box {
+  text-align: center;
+  padding: 30px;
+}
+
+.about-logo {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 15px;
+  background: radial-gradient(circle, var(--red-dim), transparent);
+  border: 3px solid var(--red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  box-shadow: 0 0 30px rgba(255,0,51,0.6);
+}
+
+.about-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  letter-spacing: 3px;
+}
+
+.about-title span { color: var(--red); }
+
+.about-version {
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.about-dev {
+  font-size: 13px;
+  margin-top: 15px;
+}
+
+.about-dev strong { color: var(--red); }
+
+/* FOOTER */
+.main-footer {
+  text-align: center;
+  padding: 25px;
+  color: var(--text-dim);
+  font-size: 11px;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+.main-footer .brand {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  letter-spacing: 3px;
+}
+
+.main-footer .brand span { color: var(--red); }
+
+.main-footer .rights {
+  margin-top: 8px;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-weight: bold;
+  z-index: 9999;
+  font-size: 13px;
+  border: 2px solid;
+  max-width: 300px;
+  animation: slideIn 0.3s;
+}
+
+.toast.success { background: rgba(0,255,136,0.15); color: var(--green); border-color: var(--green); }
+.toast.info { background: rgba(255,0,51,0.15); color: var(--red); border-color: var(--red); }
+
+@keyframes slideIn {
+  from { transform: translateX(-100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* MOBILE */
+.menu-toggle {
+  display: none;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+@media (max-width: 800px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.3s;
+    width: 240px;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .menu-toggle { display: flex; align-items: center; justify-content: center; }
+  .lang-grid { grid-template-columns: 1fr 1fr; }
+  .main { padding: 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">🐺</div>
+      <div class="sidebar-logo-text">
+        <h2>Pris.<span>RAT</span></h2>
+        <p>REMOTE ADMIN TOOL</p>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="/dashboard">
+        <span class="ico">🏠</span><span data-i18n="dashboard">الرئيسية</span>
+      </a>
+      <a class="nav-item" href="/dashboard">
+        <span class="ico">📱</span><span data-i18n="devices">الأجهزة</span>
+      </a>
+      <a class="nav-item" href="/screen">
+        <span class="ico">🖥️</span><span data-i18n="screen">عرض الشاشة</span>
+      </a>
+      <a class="nav-item" href="/dashboard">
+        <span class="ico">📷</span><span data-i18n="camera">الكاميرا</span>
+      </a>
+      <a class="nav-item" href="/dashboard">
+        <span class="ico">🎤</span><span data-i18n="mic">المايكروفون</span>
+      </a>
+      <a class="nav-item" href="/dashboard">
+        <span class="ico">📍</span><span data-i18n="location">الموقع</span>
+      </a>
+      <a class="nav-item" href="/dashboard">
+        <span class="ico">💬</span><span data-i18n="messages">الرسائل</span>
+      </a>
+      <a class="nav-item" href="/dashboard">
+        <span class="ico">📁</span><span data-i18n="files">الملفات</span>
+      </a>
+      <a class="nav-item active">
+        <span class="ico">⚙️</span><span data-i18n="settings">الإعدادات</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div>Powered by</div>
+      <div style="color: var(--red); font-weight: bold; letter-spacing: 1px;">PRIS.RAT © 2026</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <a href="/dashboard" class="back-btn">← <span data-i18n="back">رجوع</span></a>
+      <div class="page-title">
+        <span class="icon">⚙️</span>
+        <span data-i18n="settings">الإعدادات</span>
+      </div>
+    </div>
+
+    <!-- LANGUAGE SECTION -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="icon">🌐</span>
+          <span data-i18n="language">اللغة</span>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="lang-grid">
+          <div class="lang-card" onclick="setLang('ar')" id="lang-ar">
+            <div class="lang-flag">🇸🇦</div>
+            <div class="lang-name">العربية</div>
+            <div class="lang-code">AR</div>
+          </div>
+          <div class="lang-card" onclick="setLang('en')" id="lang-en">
+            <div class="lang-flag">🇬🇧</div>
+            <div class="lang-name">English</div>
+            <div class="lang-code">EN</div>
+          </div>
+          <div class="lang-card" onclick="setLang('fr')" id="lang-fr">
+            <div class="lang-flag">🇫🇷</div>
+            <div class="lang-name">Français</div>
+            <div class="lang-code">FR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREFERENCES -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="icon">🎨</span>
+          <span data-i18n="preferences">التفضيلات</span>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-name" data-i18n="notifications">الإشعارات</div>
+            <div class="setting-desc" data-i18n="notifications_desc">تلقي إشعار عند اتصال جهاز جديد</div>
+          </div>
+          <div class="toggle on" id="notifToggle" onclick="toggleSetting('notifToggle')"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-name" data-i18n="sound">الأصوات</div>
+            <div class="setting-desc" data-i18n="sound_desc">صوت تنبيه عند الأحداث</div>
+          </div>
+          <div class="toggle" id="soundToggle" onclick="toggleSetting('soundToggle')"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-name" data-i18n="auto_refresh">التحديث التلقائي</div>
+            <div class="setting-desc" data-i18n="auto_refresh_desc">تحديث اللوحة تلقائياً كل 10 ثوانٍ</div>
+          </div>
+          <div class="toggle on" id="autoToggle" onclick="toggleSetting('autoToggle')"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="icon">ℹ️</span>
+          <span data-i18n="about">عن البرنامج</span>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="about-box">
+          <div class="about-logo">🐺</div>
+          <div class="about-title">Pris.<span>RAT</span></div>
+          <div class="about-version">VERSION 1.0.0 · 2026</div>
+          <div style="font-size: 12px; color: var(--text-dim); line-height: 1.6; max-width: 500px; margin: 0 auto;">
+            <span data-i18n="about_desc">أداة إدارة عن بُعد للأجهزة الأندرويد — للاستخدام التعليمي فقط.</span>
+          </div>
+          <div class="about-dev">
+            <span data-i18n="developer">المطور:</span>
+            <strong>mkgg449-dotcom</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="icon">🔧</span>
+          <span data-i18n="actions">إجراءات</span>
+        </div>
+      </div>
+      <div class="section-body">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <button class="btn" onclick="clearCache()">🗑️ <span data-i18n="clear_cache">مسح البيانات المحلية</span></button>
+          <button class="btn secondary" onclick="resetSettings()">🔄 <span data-i18n="reset">إعادة الإعدادات الافتراضية</span></button>
+          <button class="btn secondary" onclick="window.location.href='/logout'">🚪 <span data-i18n="logout">تسجيل الخروج</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="main-footer">
+      <div class="brand">
+        <span style="color: var(--red);">PRIS.RAT</span> © 2026
+      </div>
+      <div>
+        <span data-i18n="developed_by">Developed by</span>
+        <strong style="color: var(--red);">mkgg449-dotcom</strong>
+      </div>
+      <div class="rights">
+        <span data-i18n="rights">All Rights Reserved · For Educational Purposes Only</span>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+/* ============ TRANSLATIONS ============ */
+const translations = {
+  ar: {
+    dashboard: 'الرئيسية',
+    devices: 'الأجهزة',
+    screen: 'عرض الشاشة',
+    camera: 'الكاميرا',
+    mic: 'المايكروفون',
+    location: 'الموقع',
+    messages: 'الرسائل',
+    files: 'الملفات',
+    settings: 'الإعدادات',
+    back: 'رجوع',
+    language: 'اللغة',
+    preferences: 'التفضيلات',
+    notifications: 'الإشعارات',
+    notifications_desc: 'تلقي إشعار عند اتصال جهاز جديد',
+    sound: 'الأصوات',
+    sound_desc: 'صوت تنبيه عند الأحداث',
+    auto_refresh: 'التحديث التلقائي',
+    auto_refresh_desc: 'تحديث اللوحة تلقائياً كل 10 ثوانٍ',
+    about: 'عن البرنامج',
+    about_desc: 'أداة إدارة عن بُعد للأجهزة الأندرويد — للاستخدام التعليمي فقط.',
+    developer: 'المطور:',
+    actions: 'إجراءات',
+    clear_cache: 'مسح البيانات المحلية',
+    reset: 'إعادة الإعدادات الافتراضية',
+    logout: 'تسجيل الخروج',
+    developed_by: 'Developed by',
+    rights: 'All Rights Reserved · For Educational Purposes Only'
+  },
+  en: {
+    dashboard: 'Dashboard',
+    devices: 'Devices',
+    screen: 'Screen View',
+    camera: 'Camera',
+    mic: 'Microphone',
+    location: 'Location',
+    messages: 'Messages',
+    files: 'Files',
+    settings: 'Settings',
+    back: 'Back',
+    language: 'Language',
+    preferences: 'Preferences',
+    notifications: 'Notifications',
+    notifications_desc: 'Get notified when a new device connects',
+    sound: 'Sounds',
+    sound_desc: 'Alert sound on events',
+    auto_refresh: 'Auto Refresh',
+    auto_refresh_desc: 'Refresh dashboard every 10 seconds',
+    about: 'About',
+    about_desc: 'Remote administration tool for Android devices — for educational purposes only.',
+    developer: 'Developer:',
+    actions: 'Actions',
+    clear_cache: 'Clear Local Data',
+    reset: 'Reset to Defaults',
+    logout: 'Logout',
+    developed_by: 'Developed by',
+    rights: 'All Rights Reserved · For Educational Purposes Only'
+  },
+  fr: {
+    dashboard: 'Tableau de bord',
+    devices: 'Appareils',
+    screen: 'Vue d\'écran',
+    camera: 'Caméra',
+    mic: 'Microphone',
+    location: 'Localisation',
+    messages: 'Messages',
+    files: 'Fichiers',
+    settings: 'Paramètres',
+    back: 'Retour',
+    language: 'Langue',
+    preferences: 'Préférences',
+    notifications: 'Notifications',
+    notifications_desc: 'Recevoir une notification lorsqu\'un nouvel appareil se connecte',
+    sound: 'Sons',
+    sound_desc: 'Son d\'alerte lors des événements',
+    auto_refresh: 'Actualisation auto',
+    auto_refresh_desc: 'Actualiser le tableau de bord toutes les 10 secondes',
+    about: 'À propos',
+    about_desc: 'Outil d\'administration à distance pour appareils Android — à des fins éducatives uniquement.',
+    developer: 'Développeur :',
+    actions: 'Actions',
+    clear_cache: 'Effacer les données locales',
+    reset: 'Réinitialiser',
+    logout: 'Déconnexion',
+    developed_by: 'Développé par',
+    rights: 'Tous droits réservés · À des fins éducatives uniquement'
+  }
+};
+
+/* ============ SET LANGUAGE ============ */
+function setLang(lang) {
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  
+  // تحديث كل النصوص
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang] && translations[lang][key]) {
+      el.textContent = translations[lang][key];
+    }
+  });
+  
+  // تحديث البطاقات
+  document.querySelectorAll('.lang-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById('lang-' + lang);
+  if (card) card.classList.add('selected');
+  
+  // الحفظ
+  localStorage.setItem('pris_lang', lang);
+  
+  showToast(lang === 'ar' ? '✅ تم تغيير اللغة' : lang === 'fr' ? '✅ Langue modifiée' : '✅ Language changed', 'success');
+}
+
+/* ============ TOGGLE SETTINGS ============ */
+function toggleSetting(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('on');
+  const value = el.classList.contains('on');
+  localStorage.setItem('pris_' + id, value ? '1' : '0');
+}
+
+function loadToggles() {
+  ['notifToggle', 'soundToggle', 'autoToggle'].forEach(id => {
+    const saved = localStorage.getItem('pris_' + id);
+    if (saved === '0') document.getElementById(id).classList.remove('on');
+    else if (saved === '1') document.getElementById(id).classList.add('on');
+  });
+}
+
+/* ============ ACTIONS ============ */
+function clearCache() {
+  if (!confirm('مسح البيانات المحلية؟')) return;
+  localStorage.removeItem('pris_note');
+  localStorage.removeItem('pris_lang');
+  localStorage.removeItem('pris_notifToggle');
+  localStorage.removeItem('pris_soundToggle');
+  localStorage.removeItem('pris_autoToggle');
+  showToast('🗑️ تم المسح', 'info');
+}
+
+function resetSettings() {
+  if (!confirm('إعادة الإعدادات الافتراضية؟')) return;
+  localStorage.clear();
+  showToast('🔄 تم إعادة التعيين', 'info');
+  setTimeout(() => location.reload(), 800);
+}
+
+/* ============ TOAST ============ */
+function showToast(msg, type) {
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+/* ============ MENU ============ */
+function toggleMenu() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+/* ============ INIT ============ */
+document.addEventListener('DOMContentLoaded', () => {
+  const savedLang = localStorage.getItem('pris_lang') || 'ar';
+  setLang(savedLang);
+  loadToggles();
+});
+</script>
+</body>
+</html>
