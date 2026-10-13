@@ -65,7 +65,7 @@ public class ScreenShareService extends Service {
             projection = mgr.getMediaProjection(projectionResult, projectionData);
             if (projection == null) { stopSelf(); return START_NOT_STICKY; }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if (Build.VERSION.SDK_INT >= 34) {
                 projection.registerCallback(new MediaProjection.Callback() {
                     @Override
                     public void onStop() {}
